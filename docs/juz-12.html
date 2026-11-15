@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>اختبار الجزء الثاني عشر (من هود 6 إلى يوسف 52 (ص 222 إلى ص 241)) | مدكر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+<style>:root{
+  --brand:#4B365F; --brand-2:#6b5285; --brand-soft:#efeaf4;
+  --ok:#3E5F3F; --ok-bg:#E9F0E9; --bad:#8a2b2b; --bad-bg:#f8e7e7; --warn:#8a6d1f; --warn-bg:#fcf3dc;
+  --bg:#f4f4f6; --card:#ffffff; --text:#1f1f24; --muted:#6b6b76; --line:#dedde3;
+  --q-info:#f1eff4; --q-content:#e7f3f5; --q-content-line:#b8dce2;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif;font-size:16px;line-height:1.7;direction:rtl}
+a{color:var(--brand)}
+button{font-family:inherit}
+.topbar{background:var(--brand);color:#fff;display:flex;align-items:center;gap:12px;padding:10px 18px;position:sticky;top:0;z-index:20;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.topbar .t{font-weight:700;font-size:17px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar .tbt{font-variant-numeric:tabular-nums;direction:ltr;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:6px;font-weight:700}
+.topbar .tbt:empty{display:none}
+.topbar .tbt.low{background:#c62828}
+.topbar a{color:#fff;text-decoration:none;font-size:14px;border:1px solid rgba(255,255,255,.4);padding:4px 12px;border-radius:6px}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
+.crumbs{font-size:13px;color:var(--muted);margin-bottom:10px}
+.card{background:var(--card);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:22px}
+h1.qtitle{font-size:22px;color:var(--brand);margin:0 0 14px}
+.btn{display:inline-block;border:0;border-radius:6px;padding:9px 20px;font-size:15px;cursor:pointer;text-decoration:none}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{background:var(--brand-2)}
+.btn-secondary{background:#e4e2e8;color:#333}
+.btn-secondary:hover{background:#d6d3dc}
+.btn-link{background:none;color:var(--brand);padding:4px 6px}
+.quizinfo{text-align:center;margin:10px 0 20px}
+.quizinfo p{margin:4px 0}
+.notice{background:var(--brand-soft);border-right:5px solid var(--brand);padding:12px 16px;border-radius:6px;margin:14px 0;font-size:15px}
+table.gen{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+table.gen th,table.gen td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:right;vertical-align:top}
+table.gen thead th{background:#ecebf0}
+table.gen tr:nth-child(even) td{background:#fafafa}
+.center{text-align:center}
+/* attempt layout */
+.attempt{display:grid;grid-template-columns:1fr 250px;gap:20px;align-items:start}
+.navblock{position:sticky;top:70px;background:var(--card);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:14px}
+.navblock h3{margin:0 0 8px;font-size:15px;color:var(--brand)}
+.timer{background:#fff;border:1px solid var(--line);border-radius:6px;padding:6px 10px;margin-bottom:10px;font-size:14px;text-align:center}
+.timer b{font-variant-numeric:tabular-nums;font-size:17px;direction:ltr;display:inline-block}
+.timer.low{background:var(--bad-bg);border-color:#e3b3b3;color:var(--bad)}
+.qnbuttons{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.qnb{width:34px;height:40px;border:1px solid #bbb;border-radius:4px;background:#fff;cursor:pointer;font-size:13px;position:relative;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow:hidden}
+.qnb .n{height:26px;line-height:26px}
+.qnb .st{width:100%;height:12px;border-top:1px solid #ccc;background:#fff}
+.qnb.answered .st{background:#9e9e9e}
+.qnb.current{outline:2px solid var(--brand);outline-offset:1px}
+.qnb.flagged::after{content:"";position:absolute;top:0;left:0;border-top:10px solid #d9534f;border-right:10px solid transparent}
+.qnb.correct .st{background:#5cb85c}.qnb.incorrect .st{background:#d9534f}
+/* question */
+.que{display:flex;gap:14px;margin-bottom:22px}
+.que .info{flex:0 0 130px;background:var(--q-info);border:1px solid #d9d4e0;border-radius:6px;padding:10px;font-size:13px;align-self:flex-start}
+.que .info .no{font-size:15px;margin:0 0 4px}
+.que .info .no .qno{font-size:20px;font-weight:700}
+.que .info .flag{margin-top:8px;cursor:pointer;color:var(--brand);user-select:none}
+.que .content{flex:1;min-width:0}
+.que .formulation{background:var(--q-content);border:1px solid var(--q-content-line);border-radius:6px;padding:16px}
+.qtext .stem{font-size:19px;font-weight:700;color:var(--brand);border-right:5px solid var(--brand);padding:10px;margin-bottom:16px;background:rgba(255,255,255,.5)}
+.qtext .ayah{font-family:"Amiri","Traditional Arabic","Scheherazade New",serif;font-weight:400;font-size:22px;color:#2a2238}
+.prompt{font-size:14px;color:var(--muted);margin:0 0 6px}
+.answer>label{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;margin-bottom:4px;border:1px solid transparent}
+.answer>label:hover{background:rgba(255,255,255,.6)}
+.answer input{margin-top:7px}
+.answer .an{font-weight:700;min-width:22px}
+.answer .ok-ic{color:#2e7d32;font-weight:700;margin-inline-start:6px}
+.answer .bad-ic{color:#c62828;font-weight:700;margin-inline-start:6px}
+.answer label.is-correct{background:#dff0d8;border-color:#b9dcae}
+.answer label.is-wrong{background:#f2dede;border-color:#e5bcbc}
+.sfb{margin-top:10px;border:2px solid var(--ok);background:var(--ok-bg);color:var(--ok);border-radius:8px;padding:10px;font-size:15px}
+.sfb.bad{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.sfb .src{display:block;font-size:12px;opacity:.8;margin-top:4px}
+.outcome{margin-top:10px;background:var(--warn-bg);border:1px solid #ecd9a6;border-radius:6px;padding:10px;color:#5c4a14;font-size:15px}
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;background:#ece7f2;color:var(--brand);margin-inline-start:6px;font-weight:400}
+.state-correct{color:#2e7d32}.state-wrong{color:#c62828}.state-none{color:var(--muted)}
+/* review summary */
+table.reviewsum{width:100%;border-collapse:collapse;margin-bottom:22px}
+table.reviewsum th{width:130px;background:#ecebf0;text-align:right;padding:8px 12px;border-bottom:1px solid #fff;vertical-align:top}
+table.reviewsum td{background:#f6f6f8;padding:8px 12px;border-bottom:1px solid #fff}
+.band{border-radius:10px;overflow:hidden;max-width:420px;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.band .bh{color:#fff;padding:12px 16px;font-size:20px;font-weight:700;text-align:center}
+.band .bb{background:#fff;padding:12px 16px;text-align:center;font-size:15px}
+.band .bb .tip{background:#f3f1f6;border-radius:6px;padding:8px;margin-top:8px;font-size:14px}
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal{background:#fff;border-radius:10px;max-width:480px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.modal .mh{padding:14px 18px;border-bottom:1px solid var(--line);font-weight:700;font-size:17px}
+.modal .mb{padding:16px 18px}
+.modal .mf{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-start}
+.hidden{display:none!important}
+@media (max-width:860px){
+  .attempt{grid-template-columns:1fr}
+  .navblock{position:static}
+  .qnb{width:30px;height:36px;font-size:12px}.qnb .n{height:22px;line-height:22px}
+  .que{flex-direction:column}
+  .que .info{flex:none;display:flex;gap:14px;align-items:center;flex-wrap:wrap;width:100%}
+  .que .info .no{margin:0}
+  .qtext .stem{font-size:17px}.qtext .ayah{font-size:20px}
+  table.reviewsum th{width:95px}
+}
+</style></head>
+<body>
+<div class="topbar"><span class="t">برنامج مُدَّكِر — الاختبار الشامل (تدريب): الجزء 12</span><span class="tbt" id="tbtimer"></span><a href="index.html">الرئيسية</a></div>
+<div class="wrap"><div id="app"></div></div>
+<script>window.QUIZ = {"id": "juz-12", "title": "اختبار الجزء الثاني عشر (من هود 6 إلى يوسف 52 (ص 222 إلى ص 241))", "description": "أسئلة من «المختصر في تفسير القرآن الكريم» فقط: 40 سؤالًا في المعاني الصعبة والغريبة، و10 أسئلة في فوائد الآيات. تُعرض الأسئلة والخيارات بترتيب عشوائي في كل محاولة.", "time_limit_min": 60, "questions_per_attempt": 50, "home": "index.html", "questions": [{"id": "j12-m01", "type": "meaning", "ref": "هود: 6", "ayah": "ويعلم مستقرها ومستودعها", "stem": "المراد بـ {ومستودعها}:", "options": ["موضع موتها الذي تموت فيه", "موضع استقرارها في الأرض", "أصلاب الآباء وأرحام الأمهات"], "answer": 0, "explanation": "ويعلم _موضع موته الذي يموت فيه_", "page": null}, {"id": "j12-m02", "type": "meaning", "ref": "هود: 8", "ayah": "ولئن أخرنا عنهم العذاب إلى أمة معدودة", "stem": "معنى {إلى أمة معدودة}:", "options": ["إلى مدة أيام معدودة", "إلى جماعة قليلة من الناس", "إلى أمة تأتي من بعدهم"], "answer": 0, "explanation": "إلى _مدة أيام معدودة_", "page": null}, {"id": "j12-m03", "type": "meaning", "ref": "هود: 17", "ayah": "أفمن كان على بينة من ربه ويتلوه شاهد منه", "stem": "المراد بـ {شاهد منه}:", "options": ["جبريل عليه السلام", "التوراة التي أنزلت على موسى", "المؤمنون من أهل الكتاب"], "answer": 0, "explanation": "ويتبعه شاهد من ربه، وهو جبريل", "page": null}, {"id": "j12-m04", "type": "meaning", "ref": "هود: 18", "ayah": "ويقول الأشهاد هؤلاء الذين كذبوا على ربهم", "stem": "{ويقول الأشهاد} المراد بهم:", "options": ["الشهود من الملائكة والمرسلين", "جوارحهم التي تشهد عليهم", "المؤمنون من أمة محمد صلى الله عليه وسلم"], "answer": 0, "explanation": "ويقول _الشهود_ عليهم من الملائكة والمرسلين", "page": null}, {"id": "j12-m05", "type": "meaning", "ref": "هود: 27", "ayah": "وما نراك اتبعك إلا الذين هم أراذلنا بادي الرأي", "stem": "معنى {أراذلنا بادي الرأي}:", "options": ["أسافلنا فيما ظهر لنا من رأينا", "أصحاب الرأي والمشورة فينا", "سادتنا وكبراؤنا في بادئ الأمر"], "answer": 0, "explanation": "إلا _أسافلنا فيما ظهر لنا من رأينا_", "page": null}, {"id": "j12-m06", "type": "meaning", "ref": "هود: 31", "ayah": "ولا أقول للذين تزدري أعينكم لن يؤتيهم الله خيرا", "stem": "معنى {تزدري أعينكم}:", "options": ["تحتقرهم أعينكم وتستصغرهم", "تحسدهم أعينكم على ما هم فيه", "تبكي عليهم أعينكم شفقة"], "answer": 0, "explanation": "ولا أقول عن الفقراء الذين _تحتقرهم أعينكم وتستصغرهم_", "page": null}, {"id": "j12-m07", "type": "meaning", "ref": "هود: 40", "ayah": "حتى إذا جاء أمرنا وفار التنور", "stem": "المراد بقوله تعالى: {وفار التنور}:", "options": ["فار الماء من التنور الذي كانوا يخبزون فيه", "طلع الفجر وأضاء وجه الأرض", "اشتعلت النار وارتفع لهيبها"], "answer": 0, "explanation": "وفار _الماء من التنور_ الذي كانوا يخبزون فيه", "page": null}, {"id": "j12-m08", "type": "meaning", "ref": "هود: 42", "ayah": "ونادى نوح ابنه وكان في معزل", "stem": "معنى {وكان في معزل}:", "options": ["وكان منفردًا عن أبيه وقومه في مكان", "وكان بعيدًا في جبل مرتفع", "وكان معتزلًا للكفار مع المؤمنين"], "answer": 0, "explanation": "وكان _منفردًا_ عن أبيه وقومه في مكان", "page": null}, {"id": "j12-m09", "type": "meaning", "ref": "هود: 46", "ayah": "إنه ليس من أهلك إنه عمل غير صالح", "stem": "المراد بقوله تعالى: {إنه عمل غير صالح}:", "options": ["إن سؤالك يا نوح عمل غير مناسب منك", "إن ابنك ذو عمل غير صالح", "إن ركوب ابنك معك عمل غير صالح"], "answer": 0, "explanation": "إن سؤالك يا نوح عمل غير مناسب منك", "page": null}, {"id": "j12-m10", "type": "meaning", "ref": "هود: 54", "ayah": "إن نقول إلا اعتراك بعض آلهتنا بسوء", "stem": "المراد بقوله تعالى: {اعتراك بعض آلهتنا بسوء}:", "options": ["أصابك بعض آلهتنا بجنون", "أصابك بعض آلهتنا بمرض في بدنك", "حرمك بعض آلهتنا من الرزق"], "answer": 0, "explanation": "ما نقول إلا أنه _أصابك_ بعض آلهتنا _بجنون_", "page": null}, {"id": "j12-m11", "type": "meaning", "ref": "هود: 56", "ayah": "ما من دابة إلا هو آخذ بناصيتها", "stem": "المراد بقوله تعالى: {إلا هو آخذ بناصيتها}:", "options": ["إلا وهو خاضع لله تحت ملكه وسلطانه", "إلا وهو يقبض روحها عند موتها", "إلا وهو يأخذها بمقدم رأسها إلى النار"], "answer": 0, "explanation": "_ما من شيء يدب على وجه الأرض إلا وهو خاضع لله تحت ملكه وسلطانه_", "page": null}, {"id": "j12-m12", "type": "meaning", "ref": "هود: 61", "ayah": "هو أنشأكم من الأرض واستعمركم فيها", "stem": "معنى {واستعمركم فيها}:", "options": ["وجعلكم عُمَّارها", "وأطال أعماركم فيها", "وجعلكم ملوكًا فيها"], "answer": 0, "explanation": "_وجعلكم عُمَّارَها_", "page": null}, {"id": "j12-m13", "type": "meaning", "ref": "هود: 69", "ayah": "فما لبث أن جاء بعجل حنيذ", "stem": "معنى {بعجل حنيذ}:", "options": ["بعجل مشوي", "بعجل سمين", "بعجل صغير رضيع"], "answer": 0, "explanation": "فجاءهم _بعجل مشوي_", "page": null}, {"id": "j12-m14", "type": "meaning", "ref": "هود: 70", "ayah": "نكرهم وأوجس منهم خيفة", "stem": "معنى {وأوجس منهم خيفة}:", "options": ["وأخفى في نفسه الخوف منهم", "وأظهر لهم الخوف والفزع", "وهرب منهم خائفًا"], "answer": 0, "explanation": "_استنكر ذلك منهم، وأخفى في نفسه الخوف منهم_", "page": null}, {"id": "j12-m15", "type": "meaning", "ref": "هود: 73", "ayah": "رحمة الله وبركاته عليكم أهل البيت", "stem": "المراد بـ {أهل البيت} في الآية:", "options": ["أهل بيت إبراهيم", "أهل بيت النبي محمد صلى الله عليه وسلم", "أهل البيت الحرام"], "answer": 0, "explanation": "رحمة الله وبركاته عليكم - _يا أهل بيت إبراهيم_ -", "page": null}, {"id": "j12-m16", "type": "meaning", "ref": "هود: 77", "ayah": "سيء بهم وضاق بهم ذرعا", "stem": "معنى {وضاق بهم ذرعا}:", "options": ["وضاق صدره", "وضاقت يده عن إكرامهم", "وضاق بيته عن إيوائهم"], "answer": 0, "explanation": "_ساءه مجيئهم، وضاق صدره_", "page": null}, {"id": "j12-m17", "type": "meaning", "ref": "هود: 80", "ayah": "لو أن لي بكم قوة أو آوي إلى ركن شديد", "stem": "المراد بـ {ركن شديد}:", "options": ["عشيرة تمنعني", "حصن منيع أتحصن فيه", "جبل عال أعتصم به"], "answer": 0, "explanation": "_أو عشيرة تمنعني_", "page": null}, {"id": "j12-m18", "type": "meaning", "ref": "هود: 83", "ayah": "مسومة عند ربك وما هي من الظالمين ببعيد", "stem": "المراد بـ {الظالمين} في قوله تعالى: {وما هي من الظالمين ببعيد}:", "options": ["الظالمون من قريش وغيرهم", "قوم لوط خاصة", "أصحاب مدين قوم شعيب"], "answer": 0, "explanation": "وليست هذه الحجارة من الظالمين من قريش وغيرهم ببعيدة", "page": null}, {"id": "j12-m19", "type": "meaning", "ref": "هود: 89", "ayah": "لا يجرمنكم شقاقي أن يصيبكم مثل ما أصاب قوم نوح", "stem": "معنى {لا يجرمنكم شقاقي}:", "options": ["لا تحملنكم عداوتي", "لا يحزننكم فراقي", "لا يغرنكم ضعفي"], "answer": 0, "explanation": "_لا تَحْمِلَنَّكم عداوتي_ على التكذيب بما جئت به", "page": null}, {"id": "j12-m20", "type": "meaning", "ref": "هود: 91", "ayah": "ولولا رهطك لرجمناك", "stem": "معنى {لرجمناك}:", "options": ["لقتلناك بالرمي بالحجارة", "لشتمناك وسببناك", "لطردناك من قريتنا"], "answer": 0, "explanation": "ولولا أنَّ عشيرتك على ملتنا _لقتلناك بالرمي بالحجارة_", "page": null}, {"id": "j12-m21", "type": "meaning", "ref": "هود: 92", "ayah": "واتخذتموه وراءكم ظهريا", "stem": "معنى {ظهريا}:", "options": ["منبوذًا", "ظهيرًا ونصيرًا", "سندًا تعتمدون عليه"], "answer": 0, "explanation": "وتركتم الله وراءكم _منبوذًا_", "page": null}, {"id": "j12-m22", "type": "meaning", "ref": "هود: 100", "ayah": "ذلك من أنباء القرى نقصه عليك منها قائم وحصيد", "stem": "المراد بقوله تعالى: {منها قائم وحصيد}:", "options": ["منها ما هو قائم المعالم، ومنها ما محيت معالمه", "منها زرع قائم، ومنها زرع محصود", "منها أهل أحياء، ومنها أهل حصدهم السيف"], "answer": 0, "explanation": "من هذه القرى _ما هو قائم المعالم، ومنها ما مُحِيَت معالمه_", "page": null}, {"id": "j12-m23", "type": "meaning", "ref": "هود: 101", "ayah": "وما زادوهم غير تتبيب", "stem": "معنى {غير تتبيب}:", "options": ["إلا خسرانًا وهلاكًا", "إلا تثبيتًا على الكفر", "إلا توبة وندمًا"], "answer": 0, "explanation": "وما زادتهم آلهتهم هذه _إلا خسرانًا وهلاكًا_", "page": null}, {"id": "j12-m24", "type": "meaning", "ref": "هود: 107", "ayah": "خالدين فيها ما دامت السماوات والأرض إلا ما شاء ربك", "stem": "المراد بقوله تعالى في أهل النار: {إلا ما شاء ربك}:", "options": ["إلا من شاء الله إخراجه من عصاة الموحدين", "إلا مدة وقوفهم في الحشر قبل دخولها", "إلا من تاب منهم وهو في النار"], "answer": 0, "explanation": "إلا من شاء الله إخراجه من عصاة الموحدين", "page": null}, {"id": "j12-m25", "type": "meaning", "ref": "هود: 108", "ayah": "عطاء غير مجذوذ", "stem": "معنى {غير مجذوذ}:", "options": ["غير مقطوع", "غير محسوب ولا معدود", "غير مخلوط بكدر"], "answer": 0, "explanation": "إن نعيم الله لأهل الجنة غير مقطوع عنهم", "page": null}, {"id": "j12-m26", "type": "meaning", "ref": "هود: 113", "ayah": "ولا تركنوا إلى الذين ظلموا فتمسكم النار", "stem": "معنى {ولا تركنوا إلى الذين ظلموا}:", "options": ["ولا تميلوا إلى الكفار الظالمين بمداهنة أو مودة", "ولا تسكنوا في ديار الظالمين", "ولا تقاتلوا الظالمين فتهلكوا"], "answer": 0, "explanation": "_ولا تميلوا_ إلى الكفار الظالمين بمداهنة أو مودّة", "page": null}, {"id": "j12-m27", "type": "meaning", "ref": "هود: 114", "ayah": "وأقم الصلاة طرفي النهار وزلفا من الليل", "stem": "معنى {وزلفا من الليل}:", "options": ["ساعات من الليل", "قربات يتقرب بها في الليل", "آخر الليل وقت السحر خاصة"], "answer": 0, "explanation": "وأقمها في _ساعات من الليل_", "page": null}, {"id": "j12-m28", "type": "meaning", "ref": "هود: 119", "ayah": "إلا من رحم ربك ولذلك خلقهم", "stem": "المراد بقوله تعالى: {ولذلك خلقهم}:", "options": ["ولذلك الاختبار بالاختلاف خلقهم", "وللرحمة وحدها خلقهم", "ولعمارة الأرض خلقهم"], "answer": 0, "explanation": "ولذلك الاختبار بالاختلاف خلقهم سبحانه", "page": null}, {"id": "j12-m29", "type": "meaning", "ref": "يوسف: 6", "ayah": "وكذلك يجتبيك ربك ويعلمك من تأويل الأحاديث", "stem": "المراد بـ {تأويل الأحاديث}:", "options": ["تعبير الرؤى", "تفسير أحاديث الأنبياء", "أخبار الأمم السابقة"], "answer": 0, "explanation": "ويعلمك _تعبير الرؤى_", "page": null}, {"id": "j12-m30", "type": "meaning", "ref": "يوسف: 8", "ayah": "إن أبانا لفي ضلال مبين", "stem": "معنى {لفي ضلال مبين} في قول إخوة يوسف:", "options": ["لفي خطأ بيِّن", "لفي كفر بيِّن", "لفي حيرة وتيه بعد فقد يوسف"], "answer": 0, "explanation": "إنا لنراه في _خطأ بيِّن_ حين فضَّلهما علينا", "page": null}, {"id": "j12-m31", "type": "meaning", "ref": "يوسف: 19", "ayah": "وأسروه بضاعة", "stem": "معنى {وأسروه بضاعة}:", "options": ["أخفوه عن بقية القافلة زاعمين أنه بضاعة", "قيدوه كما يقيد الأسير ليبيعوه", "أظهروه للناس ليبيعوه"], "answer": 0, "explanation": "_وأخفاه واردهم_ وبعض أصحابه عن بقية القافلة زاعمين أنه بضاعة استبضعوها", "page": null}, {"id": "j12-m32", "type": "meaning", "ref": "يوسف: 20", "ayah": "وكانوا فيه من الزاهدين", "stem": "سبب زهدهم فيه في قوله تعالى: {وكانوا فيه من الزاهدين}:", "options": ["حرصهم على التخلص منه سريعًا خوفًا من أهله", "قلة جماله وضعف بدنه", "كثرة العبيد في أسواق مصر"], "answer": 0, "explanation": "وكانوا من الزاهدين فيه لحرصهم على التخلص منه سريعًا", "page": null}, {"id": "j12-m33", "type": "meaning", "ref": "يوسف: 23", "ayah": "قال معاذ الله إنه ربي أحسن مثواي", "stem": "المراد بـ {ربي} في قوله: {إنه ربي أحسن مثواي}:", "options": ["سيده عزيز مصر", "الله سبحانه وتعالى", "أبوه يعقوب عليه السلام"], "answer": 0, "explanation": "_أعتصم بالله مما دعوتِني إليه، إن سيّدي_ أحسن إليّ في _مقامي عنده_", "page": null}, {"id": "j12-m34", "type": "meaning", "ref": "يوسف: 30", "ayah": "قد شغفها حبا", "stem": "معنى {قد شغفها حبا}:", "options": ["قد وصل حبه شغاف قلبها", "قد أشغلها حبه عن زوجها", "قد أفقدها حبه عقلها"], "answer": 0, "explanation": "قد وصل حبه _شغاف قلبها_ (أي: غلافه)", "page": null}, {"id": "j12-m35", "type": "meaning", "ref": "يوسف: 31", "ayah": "وأعتدت لهن متكأ", "stem": "معنى {متكأ}:", "options": ["محلًّا فيه فراش ووسائد", "طعامًا يُقطع بالسكاكين", "عصيًّا يتكئن عليها"], "answer": 0, "explanation": "_وهَيَّأت_ لهن _محلًّا فيه فراش ووسائد_", "page": null}, {"id": "j12-m36", "type": "meaning", "ref": "يوسف: 41", "ayah": "أما أحدكما فيسقي ربه خمرا", "stem": "المراد بـ {ربه} في قوله: {فيسقي ربه خمرا}:", "options": ["الملك", "عزيز مصر زوج المرأة", "يوسف عليه السلام"], "answer": 0, "explanation": "فيسقي _الملك_", "page": null}, {"id": "j12-m37", "type": "meaning", "ref": "يوسف: 42", "ayah": "فأنساه الشيطان ذكر ربه", "stem": "المراد بقوله تعالى: {فأنساه الشيطان ذكر ربه}:", "options": ["أنسى الشيطانُ الساقيَ ذكرَ يوسف عند الملك", "أنسى الشيطانُ يوسفَ ذكرَ ربه فتعلق بغيره", "أنسى الشيطانُ الملكَ رؤياه"], "answer": 0, "explanation": "فأنسى الشيطان الساقي ذكر يوسف عند الملك", "page": null}, {"id": "j12-m38", "type": "meaning", "ref": "يوسف: 45", "ayah": "وقال الذي نجا منهما وادكر بعد أمة", "stem": "معنى {وادكر بعد أمة}:", "options": ["وتذكر بعد مدة", "وتذكر بعد اجتماع جماعة من الناس", "وتذكر بعد أن سأله الملك عن يوسف"], "answer": 0, "explanation": "_وتذَكَّر_ يوسف عليه السلام وما هو عليه من علم تأويل الرؤيا بعد مدة", "page": null}, {"id": "j12-m39", "type": "meaning", "ref": "يوسف: 48", "ayah": "يأكلن ما قدمتم لهن إلا قليلا مما تحصنون", "stem": "معنى {مما تحصنون}:", "options": ["مما تحفظونه ليكون بذرًا", "مما تحصدونه من الزرع", "مما تخزنونه في الحصون للحرب"], "answer": 0, "explanation": "إلا قليلًا _مما تحفظونه_ مما يكون بذرًا", "page": null}, {"id": "j12-m40", "type": "meaning", "ref": "يوسف: 52", "ayah": "ذلك ليعلم أني لم أخنه بالغيب", "stem": "{ذلك ليعلم أني لم أخنه بالغيب} القائل:", "options": ["امرأة العزيز", "يوسف عليه السلام", "عزيز مصر"], "answer": 0, "explanation": "قالت امرأة العزيز: ذلك الإقرار بأني أنا التي راودت يوسف، وأنه صادق؛ ليعلم أني لم أفترِ عليه في غيابه", "page": null}, {"id": "j12-f01", "type": "faida", "ref": "هود: 8", "ayah": "ولئن أخرنا عنهم العذاب إلى أمة معدودة ليقولن ما يحبسه", "stem": "نستفيد من هذه الآية فوائد منها:", "options": ["لا ينبغي الاغترار بإمهال الله لأهل معصيته، فإنه قد يأخذهم فجأة", "وجوب إكرام الضيف", "مشروعية العمل بالقرائن في الأحكام"], "answer": 0, "explanation": "لا ينبغي الاغترار بإمهال الله تعالى لأهل معصيته، فإنه قد يأخذهم فجأة وهم لا يشعرون.", "page": 222}, {"id": "j12-f02", "type": "faida", "ref": "هود: 43", "ayah": "قال لا عاصم اليوم من أمر الله إلا من رحم", "stem": "من خلال تدبر الآية الكريمة نستفيد:", "options": ["لا ملجأ من الله إلا إليه، ولا عاصم من أمره إلا هو سبحانه", "مشروعية السلام لمن دخل على غيره، ووجوب الرد", "الحكمة من نزول القرآن عربيًّا أن يعقله العرب"], "answer": 0, "explanation": "لا ملجأ من الله إلا إليه، ولا عاصم من أمره إلا هو سبحانه.", "page": 226}, {"id": "j12-f03", "type": "faida", "ref": "هود: 52", "ayah": "استغفروا ربكم ثم توبوا إليه يرسل السماء عليكم مدرارا ويزدكم قوة إلى قوتكم", "stem": "نستفيد من هذه الآية فوائد منها:", "options": ["فضل الاستغفار والتوبة، وأنهما سبب إنزال المطر وزيادة الذرية والأموال", "بيان جمال يوسف عليه السلام الذي كان سبب افتتان النساء به", "مشروعية كتمان بعض الحقائق إن ترتب على إظهارها أذى"], "answer": 0, "explanation": "فضل الاستغفار والتوبة، وأنهما سبب إنزال المطر وزيادة الذرية والأموال.", "page": 227}, {"id": "j12-f04", "type": "faida", "ref": "هود: 69", "ayah": "فما لبث أن جاء بعجل حنيذ", "stem": "من خلال تدبر الآية الكريمة نستفيد:", "options": ["وجوب إكرام الضيف", "حرمة نقص الكيل والوزن وبخس الناس حقوقهم", "إيثار يوسف عليه السلام السجن على معصية الله"], "answer": 0, "explanation": "وجوب إكرام الضيف.", "page": 229}, {"id": "j12-f05", "type": "faida", "ref": "هود: 86", "ayah": "بقية الله خير لكم إن كنتم مؤمنين", "stem": "نستفيد من هذه الآية فوائد منها:", "options": ["وجوب الرضا بالحلال وإن قل", "ثبوت الرؤيا شرعًا، وجواز تعبيرها", "عفة الداعية إلى الله وأنه يرجو منه الثواب وحده"], "answer": 0, "explanation": "وجوب الرضا بالحلال وإن قل.", "page": 231}, {"id": "j12-f06", "type": "faida", "ref": "هود: 114", "ayah": "إن الحسنات يذهبن السيئات ذلك ذكرى للذاكرين", "stem": "نستفيد من هذه الآية فوائد منها:", "options": ["بيان سنة الله تعالى في أن الحسنة تمحو السيئة", "بيان دور العشيرة في نصرة الدعوة والدعاة", "استحباب تبشير المؤمن بما هو خير له"], "answer": 0, "explanation": "بيان سُنَّة الله تعالى في أن الحسنة تمحو السيئة.", "page": 234}, {"id": "j12-f07", "type": "faida", "ref": "يوسف: 8", "ayah": "إذ قالوا ليوسف وأخوه أحب إلى أبينا منا ونحن عصبة", "stem": "من خلال تدبر الآية الكريمة نستفيد:", "options": ["الميل إلى أحد الأبناء بالحب يورث العداوة والحسد بين الإخوة", "من وسائل المشركين في التنفير من الرسل الاتهام بالجنون", "لا يملك الأنبياء الشفاعة لمن كفر بالله ولو كانوا أبناءهم"], "answer": 0, "explanation": "الميل إلى أحد الأبناء بالحب يورث العداوة والحسد بين الإِخوة.", "page": 236}, {"id": "j12-f08", "type": "faida", "ref": "يوسف: 23", "ayah": "قال معاذ الله إنه ربي أحسن مثواي إنه لا يفلح الظالمون", "stem": "نستفيد من هذه الآية فوائد منها:", "options": ["قبح خيانة المحسن في أهله وماله، وهو من أسباب رفض يوسف للفاحشة", "بيان فظاعة وقبح عمل قوم لوط", "مشروعية جدال الكفار ومناظرتهم"], "answer": 0, "explanation": "قبح خيانة المحسن في أهله وماله، الأمر الذي ذكره يوسف من جملة أسباب رفض الفاحشة.", "page": 238}, {"id": "j12-f09", "type": "faida", "ref": "يوسف: 39", "ayah": "يا/صاحبي السجن أأرباب متفرقون خير أم الله الواحد القهار", "stem": "من الفوائد المستقاة من الآيات الكريمة:", "options": ["استغلال المناسبات للدعوة إلى الله، كما استغلها يوسف عليه السلام في السجن", "وجوب الرضا بالحلال وإن قل", "طرد المشركين من رحمة الله تعالى"], "answer": 0, "explanation": "استغلال المناسبات للدعوة إلى الله، كما استغلها يوسف عليه السلام في السجن.", "page": 240}, {"id": "j12-f10", "type": "faida", "ref": "يوسف: 50", "ayah": "فاسأله ما بال النسوة اللاتي قطعن أيديهن", "stem": "من خلال تدبر الآية الكريمة نستفيد:", "options": ["من كمال أدب يوسف أنه أشار لحدث النسوة ولم يشر إلى حدث امرأة العزيز", "بيان علة الخلق، وهي اختبار العباد بامتثال أوامر الله", "حرمة طرد فقراء المؤمنين، ووجوب إكرامهم"], "answer": 0, "explanation": "من كمال أدب يوسف أنه أشار لحَدَث النسوة ولم يشر إلى حَدَث امرأة العزيز.", "page": 241}]};</script>
+<script>/* محاكي اختبارات مُدَّكِر — يعمل بلا خادم. البيانات في window.QUIZ */
+(function () {
+  "use strict";
+  var Q = window.QUIZ;
+  var NS = "moddaker-mukhtasar";
+  var KEY_ATT = NS + ":attempts:" + Q.id;
+  var KEY_CUR = NS + ":current:" + Q.id;
+  var PER_PAGE = 1;
+  var LETTERS = ["a", "b", "c", "d", "e"];
+  var app = document.getElementById("app");
+  var timerHandle = null;
+
+  /* ---------- storage (fails soft) ---------- */
+  function load(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function drop(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+  /* ---------- helpers ---------- */
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  var AR_DAYS = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+  var AR_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+  function fmtDate(ts) {
+    var d = new Date(ts), h = d.getHours(), m = d.getMinutes(), ap = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+    return AR_DAYS[d.getDay()] + "، " + d.getDate() + " " + AR_MONTHS[d.getMonth()] + " " + d.getFullYear() + "، " + h + ":" + (m < 10 ? "0" : "") + m + " " + ap;
+  }
+  function fmtDur(ms) {
+    var s = Math.max(0, Math.round(ms / 1000)), m = Math.floor(s / 60), r = s % 60, out = [];
+    if (m) out.push(m + " دقائق"); if (r || !m) out.push(r + " ثواني"); return out.join(" ");
+  }
+  function clock(ms) {
+    var s = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), r = s % 60;
+    return h + ":" + (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r;
+  }
+  function byId(id) { for (var i = 0; i < Q.questions.length; i++) if (Q.questions[i].id === id) return Q.questions[i]; }
+  function band(p) {
+    if (p >= 90) return { c: "#2f6b3a", h: "🌟 امتياز مرتفع (90% - 100%)", t: "أداء استثنائي! أنت مستعد للاختبار الشامل في هذا الجزء.", tip: "💡 راجع الأسئلة الخاطئة إن وجدت لضمان العلامة الكاملة." };
+    if (p >= 80) return { c: "#3f6e8c", h: "⭐ امتياز (80% - 89%)", t: "أداء ممتاز، بقي القليل لتبلغ التمام.", tip: "💡 ركِّز على الكلمات الغريبة التي أخطأت فيها وأعد قراءة تفسيرها في المختصر." };
+    if (p >= 70) return { c: "#4B365F", h: "✅ جيد جداً (70% - 79%)", t: "مستواك مطمئن، ولكن يمكنك تحسينه أكثر.", tip: "💡 هام: راجع الأخطاء أدناه، ثم أعد المحاولة بعد مراجعة صفحات الجزء." };
+    if (p >= 60) return { c: "#8a6d1f", h: "👍 جيد (60% - 69%)", t: "تحتاج إلى مراجعة إضافية لهذا الجزء.", tip: "💡 اقرأ تفسير المختصر لصفحات الجزء مع التركيز على الكلمات المشروحة والفوائد." };
+    return { c: "#8a2b2b", h: "⚠️ يحتاج إلى مراجعة (أقل من 60%)", t: "هذا الجزء يحتاج إلى مذاكرة مركّزة قبل الاختبار الشامل.", tip: "💡 ابدأ بمراجعة الأخطاء أدناه واحدًا واحدًا، ثم أعد الاختبار." };
+  }
+
+  /* ---------- attempts ---------- */
+  function attempts() { return load(KEY_ATT, []); }
+  function current() { return load(KEY_CUR, null); }
+
+  function newAttempt() {
+    var qs = shuffle(Q.questions).slice(0, Q.questions_per_attempt || Q.questions.length);
+    var now = Date.now();
+    var cur = {
+      started: now, deadline: now + Q.time_limit_min * 60000, page: 0,
+      slots: qs.map(function (q) { return { id: q.id, order: shuffle(q.options.map(function (_, i) { return i; })), resp: null, flag: false }; })
+    };
+    save(KEY_CUR, cur);
+    return cur;
+  }
+
+  function grade(cur, finishedAt) {
+    var marks = 0;
+    cur.slots.forEach(function (s) { var q = byId(s.id); s.ok = s.resp !== null && q && s.resp === q.answer; if (s.ok) marks++; });
+    var rec = { started: cur.started, finished: finishedAt, slots: cur.slots, marks: marks, total: cur.slots.length, timeout: !!cur.timeout };
+    var all = attempts(); all.push(rec); save(KEY_ATT, all); drop(KEY_CUR);
+    return all.length - 1;
+  }
+
+  /* ---------- views ---------- */
+  function setTitle(sub) { document.title = Q.title + (sub ? ": " + sub : "") + " | مدكر"; }
+  function stopTimer() { if (timerHandle) { clearInterval(timerHandle); timerHandle = null; } var t = document.getElementById("tbtimer"); if (t) t.textContent = ""; }
+
+  function viewStart() {
+    stopTimer(); setTitle("");
+    var all = attempts(), cur = current();
+    var best = all.reduce(function (b, a) { return Math.max(b, a.marks / a.total * 100); }, -1);
+    var rows = all.map(function (a, i) {
+      var p = a.marks / a.total * 100;
+      return "<tr><td class='center'>" + (i + 1) + "</td><td>منتهية<br><small>تم التسليم " + fmtDate(a.finished) + "</small></td><td class='center'>" + a.marks.toFixed(2) + "</td><td class='center'>" + (p).toFixed(2) + "</td><td class='center'><a href='#review/" + i + "'>مراجعة</a></td></tr>";
+    }).join("");
+    app.innerHTML =
+      "<div class='crumbs'><a href='" + Q.home + "'>الصفحة الرئيسية</a> / " + esc(Q.title) + "</div>" +
+      "<div class='card'><h1 class='qtitle'>" + esc(Q.title) + "</h1>" +
+      "<div class='notice'>" + esc(Q.description) + "</div>" +
+      "<div class='quizinfo'><p>عدد الأسئلة: " + (Q.questions_per_attempt || Q.questions.length) + " سؤالًا (ترتيب عشوائي للأسئلة والخيارات)</p><p>المحاولات المسموح بها: غير محدودة</p><p>الحد الزمني: " + Q.time_limit_min + " دقيقة</p><p>طريقة التقييم: أعلى درجة</p></div>" +
+      (all.length ? "<h3>ملخص محاولاتك السابقة</h3><table class='gen'><thead><tr><th class='center'>المحاولة</th><th>الحالة</th><th class='center'>العلامات / " + all[0].total.toFixed(2) + "</th><th class='center'>الدرجة / 100.00</th><th class='center'>مراجعة</th></tr></thead><tbody>" + rows + "</tbody></table>" +
+        "<p class='center'><b>أعلى درجة: " + best.toFixed(2) + " / 100.00</b></p>" : "") +
+      "<div class='center' style='margin-top:18px'>" +
+      (cur ? "<button class='btn btn-primary' id='go'>متابعة المحاولة الأخيرة</button>" : "<button class='btn btn-primary' id='go'>" + (all.length ? "إعادة محاولة الاختبار" : "ابدأ المحاولة") + "</button>") +
+      "</div></div>";
+    document.getElementById("go").onclick = function () {
+      if (cur) { location.hash = "attempt"; return; }
+      modal("اختبار محدد بزمن", "<p>هذا الاختبار له حد زمني قدره <b>" + Q.time_limit_min + " دقيقة</b>. سيبدأ العد التنازلي فور بدء المحاولة ولا يمكن إيقافه، ويجب التسليم قبل انتهاء الوقت.</p><p>هل أنت متأكد من رغبتك في البدء الآن؟</p>",
+        "ابدأ المحاولة", function () { newAttempt(); location.hash = "attempt"; });
+    };
+  }
+
+  function navBlock(cur, mode, curPage) {
+    var html = "<div class='navblock'><h3>التنقل في الاختبار</h3>";
+    if (mode === "attempt") html += "<div class='timer' id='timer'>الوقت المتبقي <b id='tleft'>" + clock(cur.deadline - Date.now()) + "</b></div>";
+    html += "<div class='qnbuttons'>" + cur.slots.map(function (s, i) {
+      var cls = "qnb";
+      if (mode === "attempt") { if (s.resp !== null) cls += " answered"; if (i === curPage) cls += " current"; }
+      else cls += s.ok ? " correct" : " incorrect";
+      if (s.flag) cls += " flagged";
+      return "<button class='" + cls + "' data-i='" + i + "' title='سؤال " + (i + 1) + "'><span class='n'>" + (i + 1) + "</span><span class='st'></span></button>";
+    }).join("") + "</div>";
+    if (mode === "attempt") html += "<button class='btn btn-link' id='finish'>إنهاء المحاولة...</button>";
+    else html += "<a class='btn btn-link' href='#review-all'>عرض كل الأسئلة في صفحة واحدة</a><br><a class='btn btn-link' href='#'>إنهاء المراجعة</a>";
+    return html + "</div>";
+  }
+
+  function qInfo(i, stateTxt, gradeTxt, s, editable) {
+    return "<div class='info'><h3 class='no'>سؤال <span class='qno'>" + (i + 1) + "</span></h3><div class='state'>" + stateTxt + "</div><div class='grade'>" + gradeTxt + "</div>" +
+      (editable ? "<div class='flag' data-flag='" + i + "'>" + (s.flag ? "🚩 أزل العلامة" : "⚐ علِّم هذا السؤال") + "</div>" : (s.flag ? "<div class='flag'>🚩 مُعلَّم</div>" : "")) + "</div>";
+  }
+
+  function qText(q) {
+    return "<div class='qtext'><div class='stem'>" + (q.ayah ? "قال تعالى: <span class='ayah'>﴿" + esc(q.ayah) + "﴾</span> [" + esc(q.ref) + "]؛ " : (q.ref ? "[" + esc(q.ref) + "] " : "")) + esc(q.stem) + "</div></div>";
+  }
+
+  function viewAttempt() {
+    var cur = current();
+    if (!cur) { location.hash = ""; return; }
+    if (Date.now() >= cur.deadline) { cur.timeout = true; save(KEY_CUR, cur); var idx = grade(cur, cur.deadline); location.hash = "review/" + idx; return; }
+    setTitle("محاولة");
+    var p = Math.min(cur.page || 0, cur.slots.length - 1);
+    var s = cur.slots[p], q = byId(s.id);
+    var opts = s.order.map(function (oi, k) {
+      return "<label><input type='radio' name='ans' value='" + oi + "'" + (s.resp === oi ? " checked" : "") + "><span class='an'>" + LETTERS[k] + ".</span><span>" + esc(q.options[oi]) + "</span></label>";
+    }).join("");
+    app.innerHTML = "<div class='attempt'><div>" +
+      "<div class='que'>" + qInfo(p, s.resp === null ? "لم تتم الإجابة بعد" : "تم حفظ الإجابة", "الدرجة من 1.00", s, true) +
+      "<div class='content'><div class='formulation'>" + qText(q) + "<p class='prompt'>إختر أحد الخيارات:</p><div class='answer'>" + opts + "</div>" +
+      (s.resp !== null ? "<button class='btn btn-link' id='clr'>إزالة اختياري</button>" : "") + "</div></div></div>" +
+      "<div class='pager'>" + (p > 0 ? "<button class='btn btn-secondary' id='prev'>الصفحة السابقة</button>" : "<span></span>") +
+      "<button class='btn btn-primary' id='next'>" + (p < cur.slots.length - 1 ? "الصفحة التالية" : "إنهاء المحاولة...") + "</button></div>" +
+      "</div>" + navBlock(cur, "attempt", p) + "</div>";
+    function persist() { save(KEY_CUR, cur); }
+    app.querySelectorAll("input[name=ans]").forEach(function (r) { r.onchange = function () { s.resp = +r.value; persist(); viewAttempt(); }; });
+    var clr = document.getElementById("clr"); if (clr) clr.onclick = function () { s.resp = null; persist(); viewAttempt(); };
+    app.querySelector("[data-flag]").onclick = function () { s.flag = !s.flag; persist(); viewAttempt(); };
+    var prev = document.getElementById("prev"); if (prev) prev.onclick = function () { cur.page = p - 1; persist(); viewAttempt(); scrollTo(0, 0); };
+    document.getElementById("next").onclick = function () { if (p < cur.slots.length - 1) { cur.page = p + 1; persist(); viewAttempt(); scrollTo(0, 0); } else location.hash = "summary"; };
+    document.getElementById("finish").onclick = function () { location.hash = "summary"; };
+    app.querySelectorAll(".qnb").forEach(function (b) { b.onclick = function () { cur.page = +b.dataset.i; persist(); viewAttempt(); scrollTo(0, 0); }; });
+    startTimer(cur);
+  }
+
+  function startTimer(cur) {
+    stopTimer();
+    function tick() {
+      var left = cur.deadline - Date.now(), el = document.getElementById("tleft");
+      if (el) { el.textContent = clock(left); document.getElementById("timer").classList.toggle("low", left < 5 * 60000); }
+      var tb = document.getElementById("tbtimer"); if (tb) { tb.textContent = "⏱ " + clock(left); tb.classList.toggle("low", left < 5 * 60000); }
+      if (left <= 0) {
+        stopTimer(); var c = current(); if (!c) return; c.timeout = true; save(KEY_CUR, c);
+        var idx = grade(c, c.deadline);
+        modal("انتهى الوقت", "<p>انتهى الوقت المحدد للاختبار، وتم إرسال محاولتك تلقائيًا.</p>", "مراجعة المحاولة", function () { location.hash = "review/" + idx; }, true);
+      }
+    }
+    tick(); timerHandle = setInterval(tick, 1000);
+  }
+
+  function viewSummary() {
+    var cur = current(); if (!cur) { location.hash = ""; return; }
+    setTitle("ملخص المحاولة");
+    var unanswered = cur.slots.filter(function (s) { return s.resp === null; }).length;
+    app.innerHTML = "<div class='attempt'><div class='card'><h1 class='qtitle'>ملخص المحاولة</h1>" +
+      "<table class='gen'><thead><tr><th class='center'>سؤال</th><th>الحالة</th></tr></thead><tbody>" +
+      cur.slots.map(function (s, i) { return "<tr><td class='center'>" + (s.flag ? "🚩 " : "") + "<a href='#' data-go='" + i + "'>" + (i + 1) + "</a></td><td class='" + (s.resp === null ? "state-none" : "") + "'>" + (s.resp === null ? "لم تتم الإجابة بعد" : "تم حفظ الإجابة") + "</td></tr>"; }).join("") +
+      "</tbody></table><div class='center'><button class='btn btn-secondary' id='back'>العودة إلى المحاولة</button>" +
+      "<p style='margin:14px 0 6px'>يجب أن يتم إرسال هذه المحاولة قبل انتهاء الوقت.</p>" +
+      "<button class='btn btn-primary' id='submit'>إرسال الكل وإنهاء</button></div></div>" + navBlock(cur, "attempt", -1) + "</div>";
+    app.querySelectorAll("[data-go]").forEach(function (a) { a.onclick = function (e) { e.preventDefault(); cur.page = +a.dataset.go; save(KEY_CUR, cur); location.hash = "attempt"; }; });
+    app.querySelectorAll(".qnb").forEach(function (b) { b.onclick = function () { cur.page = +b.dataset.i; save(KEY_CUR, cur); location.hash = "attempt"; }; });
+    document.getElementById("back").onclick = document.getElementById("finish").onclick = function () { location.hash = "attempt"; };
+    document.getElementById("submit").onclick = function () {
+      modal("تأكيد", "<p>بمجرد الإرسال، لن تتمكن من تغيير إجاباتك لهذه المحاولة." + (unanswered ? "<br><b style='color:#c62828'>تنبيه: لديك " + unanswered + " سؤال/أسئلة بلا إجابة.</b>" : "") + "</p>",
+        "إرسال الكل وإنهاء", function () { var c = current(); if (!c) return; var idx = grade(c, Date.now()); location.hash = "review/" + idx; });
+    };
+    startTimer(cur);
+  }
+
+  function renderReviewQ(a, s, i) {
+    var q = byId(s.id); if (!q) return "";
+    var opts = s.order.map(function (oi, k) {
+      var cls = "", ic = "";
+      if (oi === q.answer) { cls = "is-correct"; ic = "<span class='ok-ic'>✓</span>"; }
+      else if (oi === s.resp) { cls = "is-wrong"; ic = "<span class='bad-ic'>✗</span>"; }
+      return "<label class='" + cls + "'><input type='radio' disabled" + (s.resp === oi ? " checked" : "") + "><span class='an'>" + LETTERS[k] + ".</span><span>" + esc(q.options[oi]) + "</span>" + ic + "</label>";
+    }).join("");
+    var stateTxt = s.resp === null ? "<span class='state-wrong'>لم تتم الإجابة</span>" : (s.ok ? "<span class='state-correct'>صحيح</span>" : "<span class='state-wrong'>خطأ</span>");
+    var fb = "<div class='sfb" + (s.ok ? "" : " bad") + "'><b>" + (s.ok ? "إجابة صحيحة." : (s.resp === null ? "لم تُجب عن هذا السؤال." : "إجابة خاطئة.")) + "</b><br>" +
+      (q.type === "faida" ? "الفائدة كما في المختصر: " : "التفسير: ") + esc(q.explanation).replace(/_([^_]+)_/g, "<b>$1</b>").replace(/_/g, "") + "<span class='src'>[المختصر في تفسير القرآن الكريم" + (q.page ? " — ص " + q.page : "") + "]</span></div>";
+    return "<div class='que' id='q" + i + "'>" + qInfo(i, stateTxt, "درجة " + (s.ok ? "1.00" : "0.00") + " من 1.00", s, false) +
+      "<div class='content'><div class='formulation'>" + qText(q) + "<span class='tag'>" + (q.type === "faida" ? "فوائد الآيات" : "معاني الكلمات") + "</span><div class='answer' style='margin-top:8px'>" + opts + "</div>" + fb + "</div></div></div>";
+  }
+
+  function viewReview(idx, onlyWrong) {
+    stopTimer();
+    var all = attempts(), a = all[idx]; if (!a) { location.hash = ""; return; }
+    setTitle("مراجعة المحاولة");
+    var p = a.marks / a.total * 100, b = band(p);
+    var list = a.slots.map(function (s, i) { return (!onlyWrong || !s.ok) ? renderReviewQ(a, s, i) : ""; }).join("");
+    app.innerHTML = "<div class='attempt'><div><div class='card' style='margin-bottom:20px'>" +
+      "<table class='reviewsum'>" +
+      "<tr><th>الحالة</th><td>منتهية" + (a.timeout ? " (أُرسلت تلقائيًا عند انتهاء الوقت)" : "") + "</td></tr>" +
+      "<tr><th>بدأ</th><td>" + fmtDate(a.started) + "</td></tr>" +
+      "<tr><th>إكتمل</th><td>" + fmtDate(a.finished) + "</td></tr>" +
+      "<tr><th>الفترة</th><td>" + fmtDur(a.finished - a.started) + "</td></tr>" +
+      "<tr><th>العلامات</th><td>" + a.marks.toFixed(2) + "/" + a.total.toFixed(2) + "</td></tr>" +
+      "<tr><th>الدرجة</th><td><b>" + p.toFixed(2) + "</b> من 100.00 (<b>" + Math.round(p) + "</b>%)</td></tr>" +
+      "<tr><th>الإفادة</th><td><div class='band'><div class='bh' style='background:" + b.c + "'>" + b.h + "</div><div class='bb'>" + b.t + "<div class='tip'>" + b.tip + "</div></div></div></td></tr>" +
+      "</table><div class='center'>" +
+      (onlyWrong ? "<a class='btn btn-secondary' href='#review/" + idx + "'>عرض كل الأسئلة</a>" : "<a class='btn btn-secondary' href='#review/" + idx + "/wrong'>عرض الأخطاء فقط (" + (a.total - a.marks) + ")</a>") +
+      " <a class='btn btn-primary' href='#'>إنهاء المراجعة</a></div></div>" + (list || "<div class='card center'>لا توجد أخطاء في هذه المحاولة. بارك الله فيك!</div>") +
+      "</div>" + navBlock(a, "review") + "</div>";
+    app.querySelectorAll(".qnb").forEach(function (bt) { bt.onclick = function () { var el = document.getElementById("q" + bt.dataset.i); if (el) el.scrollIntoView({ behavior: "smooth" }); }; });
+    var ra = app.querySelector("a[href='#review-all']"); if (ra) ra.setAttribute("href", "#review/" + idx);
+  }
+
+  function modal(title, body, okTxt, onOk, noCancel) {
+    var bg = document.createElement("div"); bg.className = "modal-bg";
+    bg.innerHTML = "<div class='modal' role='dialog'><div class='mh'>" + title + "</div><div class='mb'>" + body + "</div><div class='mf'><button class='btn btn-primary' data-ok>" + okTxt + "</button>" + (noCancel ? "" : "<button class='btn btn-secondary' data-cancel>إلغاء</button>") + "</div></div>";
+    document.body.appendChild(bg);
+    bg.querySelector("[data-ok]").onclick = function () { bg.remove(); onOk(); };
+    var c = bg.querySelector("[data-cancel]"); if (c) c.onclick = function () { bg.remove(); };
+  }
+
+  function route() {
+    document.querySelectorAll(".modal-bg").forEach(function (m) { m.remove(); });
+    var h = location.hash.replace(/^#/, "");
+    if (h === "attempt") return viewAttempt();
+    if (h === "summary") return viewSummary();
+    var m = h.match(/^review\/(\d+)(\/wrong)?$/); if (m) { scrollTo(0, 0); return viewReview(+m[1], !!m[2]); }
+    viewStart();
+  }
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>
+</body></html>
