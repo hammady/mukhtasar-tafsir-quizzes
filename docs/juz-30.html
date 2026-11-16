@@ -199,8 +199,9 @@ table.reviewsum td{background:#f6f6f8;padding:8px 12px;border-bottom:1px solid #
     S.booting = (window.__FB_MOCK__ ? Promise.resolve([window.__FB_MOCK__, window.__FB_MOCK__, window.__FB_MOCK__]) : Promise.all([import(SDK + "firebase-app.js"), import(SDK + "firebase-auth.js"), import(SDK + "firebase-firestore.js")])).then(function (m) {
       var app = m[0].initializeApp(CFG);
       S.fb = { auth: m[1], fs: m[2], a: m[1].getAuth(app), db: m[2].getFirestore(app) };
-      S.fb.auth.onAuthStateChanged(S.fb.a, function (u) { S.user = u; emit(u ? "signed-in" : "idle"); if (u) syncNow(); });
-      return S.fb;
+      return new Promise(function (resolve) {   // جاهز بعد أول رد من خدمة الدخول (تكون نافذة Google قد جُهّزت)
+        S.fb.auth.onAuthStateChanged(S.fb.a, function (u) { S.user = u; emit(u ? "signed-in" : "idle"); if (u) syncNow(); resolve(S.fb); });
+      });
     }).catch(function (e) { S.booting = null; emit("error", "تعذّر تحميل خدمة المزامنة. تحقق من الاتصال بالإنترنت."); throw e; });
     return S.booting;
   }
@@ -310,19 +311,22 @@ table.reviewsum td{background:#f6f6f8;padding:8px 12px;border-bottom:1px solid #
     onSubmit: function () { if (S.user) syncNow(); },
     removeAttempt: removeAttempt,
     enforceCap: enforceCap,
+    /* يحمّل Firebase مسبقًا (عند فتح نافذة الموافقة) ليُفتح مربع Google مباشرةً من ضغطة المستخدم؛ وإلا تمنعه Safari على الجوال */
+    prepare: function () { return enabled() ? boot().then(function () { return true; }, function () { return false; }) : Promise.resolve(false); },
     signIn: function () {
       set(FLAG, 1);
-      return boot().then(function (fb) {
-        var p = new fb.auth.GoogleAuthProvider();
-        return fb.auth.signInWithPopup(fb.a, p).catch(function (e) {
-          if (e && (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment")) return fb.auth.signInWithRedirect(fb.a, p);
-          if (e && (e.code === "auth/popup-closed-by-user" || e.code === "auth/cancelled-popup-request")) { del(FLAG); return; }
-          throw e;
+      function go(fb) {
+        return fb.auth.signInWithPopup(fb.a, new fb.auth.GoogleAuthProvider()).catch(function (e) {
+          var c = e && e.code;
+          if (c === "auth/popup-closed-by-user" || c === "auth/cancelled-popup-request") { del(FLAG); return; }
+          del(FLAG);
+          if (c === "auth/popup-blocked") emit("error", "منع المتصفح نافذة تسجيل الدخول. اسمح بالنوافذ المنبثقة لهذا الموقع ثم اضغط «تسجيل الدخول» مرة أخرى.");
+          else if (c === "auth/unauthorized-domain") emit("error", "هذا الموقع غير مضاف إلى النطاقات المصرّح بها في Firebase.");
+          else emit("error", "تعذّر تسجيل الدخول.");
         });
-      }).catch(function (e) {
-        if (e && e.code === "auth/unauthorized-domain") emit("error", "هذا الموقع غير مضاف إلى النطاقات المصرّح بها في Firebase.");
-        else if (S.status !== "error") emit("error", "تعذّر تسجيل الدخول.");
-      });
+      }
+      if (S.fb) return go(S.fb);   // متزامن مع الضغطة: لا await قبل فتح النافذة
+      return boot().then(go).catch(function () {});
     },
     signOut: function () {
       del(FLAG);
