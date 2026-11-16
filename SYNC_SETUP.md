@@ -9,7 +9,7 @@
 5. **Firestore → Rules:** الصق محتوى `firebase/firestore.rules` ثم Publish.
 6. **Project settings → General → Your apps → Web (`</>`):** سجّل تطبيقًا واحذف خيار Hosting، وانسخ كائن `firebaseConfig`.
 7. انسخ `assets/firebase-config.example.json` إلى `assets/firebase-config.json` وضع القيم (هذه الإعدادات عامة بطبيعتها وليست أسرارًا).
-8. اختياري: في Google Cloud Console → APIs & Services → Credentials قيّد مفتاح API بالنطاقات `www.hammady.net/*` و`hammady.github.io/*`.
+8. موصى به: في Google Cloud Console → APIs & Services → Credentials افتح «Browser key (auto created by Firebase)» واختر Application restrictions = Websites وأضف **كل** هذه العناوين (حذف أيٍّ من `firebaseapp.com` أو `web.app` يكسر نافذة تسجيل الدخول): `https://www.hammady.net/*` و`https://hammady.github.io/*` و`https://<project-id>.firebaseapp.com/*` و`https://<project-id>.web.app/*` و`http://localhost:8765/*`. مفتاح Firebase للويب ليس سرًّا، لكن هذا القيد يمنع مواقع أخرى من استعماله. قد يستغرق التطبيق 5 دقائق.
 9. `python3 tools/build.py` ثم commit وpush.
 
 ## نموذج البيانات
