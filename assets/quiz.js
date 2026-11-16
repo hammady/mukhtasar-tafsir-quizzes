@@ -62,6 +62,7 @@
     cur.slots.forEach(function (s) { var q = byId(s.id); s.ok = s.resp !== null && q && s.resp === q.answer; if (s.ok) marks++; });
     var rec = { started: cur.started, finished: finishedAt, slots: cur.slots, marks: marks, total: cur.slots.length, timeout: !!cur.timeout };
     var all = attempts(); all.push(rec); save(KEY_ATT, all); drop(KEY_CUR);
+    if (window.MSync) window.MSync.onSubmit();
     return all.length - 1;
   }
 

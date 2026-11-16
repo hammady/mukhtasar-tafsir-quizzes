@@ -12,6 +12,11 @@ from juz_meta import label, pages  # noqa: E402
 
 CSS = open(os.path.join(ROOT, "assets/quiz.css"), encoding="utf-8").read()
 JS = open(os.path.join(ROOT, "assets/quiz.js"), encoding="utf-8").read()
+SYNC = open(os.path.join(ROOT, "assets/sync.js"), encoding="utf-8").read()
+try:
+    FBCFG = json.dumps(json.load(open(os.path.join(ROOT, "assets/firebase-config.json"), encoding="utf-8")))
+except FileNotFoundError:
+    FBCFG = "null"
 DASH = open(os.path.join(ROOT, "assets/dashboard.html"), encoding="utf-8").read()
 OUT = os.path.join(ROOT, "docs")
 os.makedirs(OUT, exist_ok=True)
@@ -32,6 +37,8 @@ PAGE = """<!doctype html>
 <div class="topbar"><span class="t">برنامج مُدَّكِر — الاختبار الشامل (تدريب): {short}</span><span class="tbt" id="tbtimer"></span><a href="index.html">الرئيسية</a></div>
 <div class="wrap"><div id="app"></div></div>
 <script>window.QUIZ = {data};</script>
+<script>window.FIREBASE_CFG = {fbcfg};</script>
+<script>{sync}</script>
 <script>{js}</script>
 </body></html>"""
 
@@ -53,11 +60,11 @@ for j in range(1, 31):
         "questions": qs,
     }
     data = json.dumps(quiz, ensure_ascii=False).replace("</", "<\\/")
-    out = PAGE.format(title=html.escape(quiz["title"]), short=f"الجزء {j}", css=CSS, js=JS, data=data)
+    out = PAGE.format(title=html.escape(quiz["title"]), short=f"الجزء {j}", css=CSS, js=JS, data=data, fbcfg=FBCFG, sync=SYNC)
     open(os.path.join(OUT, f"juz-{j:02d}.html"), "w", encoding="utf-8").write(out)
     summary.append({"juz": j, "label": label(j), "count": len(qs), "file": f"juz-{j:02d}.html",
                     "time": quiz["time_limit_min"], "pages": list(pages(j))})
 
-dash = DASH.replace("/*__JUZ__*/[]", json.dumps(summary, ensure_ascii=False))
+dash = DASH.replace("/*__JUZ__*/[]", json.dumps(summary, ensure_ascii=False)).replace("/*__FBCFG__*/null", FBCFG).replace("/*__SYNCJS__*/", SYNC.replace("</", "<\\/"))
 open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(dash)
 print("built", sum(1 for s in summary if s["file"]), "quizzes ->", OUT)

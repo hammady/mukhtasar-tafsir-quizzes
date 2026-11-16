@@ -36,6 +36,16 @@ h1{color:var(--brand);font-size:24px;margin:4px 0 4px}
 .juz.disabled{opacity:.5;pointer-events:none}
 .warn{background:#fcf3dc;border:1px solid #ecd9a6;border-right:5px solid #c9a227;color:#5c4a14;border-radius:8px;padding:12px 16px;margin:0 0 18px;font-size:15px}
 .warn a{color:#4B365F;font-weight:700}
+.sync{background:var(--card);border-radius:10px;padding:12px 16px;margin:0 0 18px;box-shadow:0 1px 3px rgba(0,0,0,.07);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.sync .t{flex:1;min-width:220px;font-size:14px}
+.sync .t small{display:block;color:var(--muted)}
+.btn{font-family:inherit;border:0;border-radius:6px;padding:7px 16px;font-size:14px;cursor:pointer}
+.btn-p{background:var(--brand);color:#fff}.btn-s{background:#e4e2e8;color:#333}.btn-d{background:#fff;color:#8a2b2b;border:1px solid #e3b3b3}
+.sync .st{font-size:13px;color:var(--muted)}.sync .st.err{color:#8a2b2b}
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.mdl{background:#fff;border-radius:10px;max-width:520px;width:100%;padding:20px;max-height:90vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.mdl h3{margin:0 0 8px;color:var(--brand)}.mdl ul{margin:6px 0 10px;padding-inline-start:20px}.mdl .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+[hidden]{display:none!important}
 .foot{margin-top:18px;font-size:13px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .foot button{font-family:inherit;border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 12px;cursor:pointer}
 @media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
@@ -46,6 +56,17 @@ h1{color:var(--brand);font-size:24px;margin:4px 0 4px}
   <div class="warn" role="note"><b>⚠️ تنبيه:</b> هذه الأسئلة مولَّدة بالذكاء الاصطناعي وقد تحتوي على أخطاء. بعد كل اختبار راجع في صفحة المراجعة مرجع الإجابة الصحيحة، فهو منقول دائمًا بنصه الحرفي من «المختصر في تفسير القرآن الكريم» للتحقق والتوثيق. لمزيد من المعلومات أو للإبلاغ عن خطأ: <a href="https://github.com/hammady/moddaker-mukhtasar-quizzes" target="_blank" rel="noopener">مستودع المشروع على GitHub</a>.</div>
   <h1>تقدمي في اختبارات الأجزاء الثلاثين</h1>
   <p class="sub">مصدر الأسئلة: «المختصر في تفسير القرآن الكريم» فقط — 50 سؤالًا لكل جزء (40 للمعاني الصعبة والغريبة + 10 لفوائد الآيات).</p>
+  <div class="sync" id="sync" hidden>
+    <div class="t"><b>☁️ مزامنة التقدم (اختيارية)</b>
+      <small id="sync-desc">تعمل الاختبارات كاملةً دون تسجيل دخول، ويُحفظ تقدمك في هذا المتصفح. سجّل الدخول إن أردت الوصول إلى تقدمك من أي جهاز.</small></div>
+    <span class="st" id="sync-st"></span>
+    <button class="btn btn-p" id="sync-open">تسجيل الدخول للمزامنة</button>
+    <span id="sync-in" hidden style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-s" id="sync-now">مزامنة الآن</button>
+      <button class="btn btn-s" id="sync-out">تسجيل الخروج</button>
+      <button class="btn btn-d" id="sync-del">حذف بياناتي من الخادم</button>
+    </span>
+  </div>
   <div class="stats">
     <div class="stat"><div class="v" id="s-done">0/30</div><div class="k">أجزاء اختُبرت</div></div>
     <div class="stat"><div class="v" id="s-avg">—</div><div class="k">متوسط أعلى درجة</div></div>
@@ -68,6 +89,8 @@ h1{color:var(--brand);font-size:24px;margin:4px 0 4px}
     <input type="file" id="impf" accept=".json" hidden>
   </div>
 </div>
+<script>window.FIREBASE_CFG=/*__FBCFG__*/null;</script>
+<script>/*__SYNCJS__*/</script>
 <script>
 var JUZ = /*__JUZ__*/[];
 var NS = "moddaker-mukhtasar";
@@ -115,5 +138,44 @@ document.getElementById("imp").onclick=function(){document.getElementById("impf"
 document.getElementById("impf").onchange=function(e){var f=e.target.files[0];if(!f)return;f.text().then(function(t){try{var o=JSON.parse(t);Object.keys(o).forEach(function(k){if(k.indexOf(NS)===0)localStorage.setItem(k,o[k])});render()}catch(err){alert("ملف غير صالح")}})};
 window.addEventListener("storage",render);window.addEventListener("focus",render);
 render();
+
+/* ---- optional cloud sync UI ---- */
+(function(){
+  var M=window.MSync; if(!M||!M.enabled()) return;
+  var $=function(i){return document.getElementById(i)};
+  var REPO="https://github.com/hammady/moddaker-mukhtasar-quizzes#الخصوصية";
+  $("sync").hidden=false;
+  function modal(html,btns){
+    var bg=document.createElement("div");bg.className="mbg";
+    bg.innerHTML="<div class='mdl' role='dialog'>"+html+"<div class='row'></div></div>";
+    var row=bg.querySelector(".row");
+    btns.forEach(function(b){var e=document.createElement("button");e.className="btn "+b.c;e.textContent=b.t;e.onclick=function(){bg.remove();b.f&&b.f()};row.appendChild(e)});
+    document.body.appendChild(bg);
+  }
+  $("sync-open").onclick=function(){
+    modal("<h3>مزامنة التقدم (اختيارية)</h3>"+
+      "<p>يمكنك استخدام الاختبارات كاملةً دون تسجيل دخول، ويُحفظ تقدمك في هذا المتصفح فقط، مع إمكانية التصدير والاستيراد.<br>إذا أردت الوصول إلى تقدمك من أي جهاز، يمكنك تسجيل الدخول بحساب Google.</p>"+
+      "<b>ما الذي يُحفظ عند تسجيل الدخول؟</b><ul>"+
+      "<li>من حساب Google: بريدك الإلكتروني واسمك وصورتك (لدى خدمة الدخول Firebase)، ويمكن لمشرف الموقع رؤيتها.</li>"+
+      "<li>نتائج محاولاتك فقط: الجزء، والوقت، وإجاباتك، ودرجتك.</li></ul>"+
+      "<p>لا نصل إلى أي بيانات أخرى في حسابك، ولا نستخدم أدوات تتبع أو إعلانات، ولا نشارك بياناتك مع أحد. يمكنك تسجيل الخروج أو حذف بياناتك من الخادم في أي وقت.</p>"+
+      "<p><a href='"+REPO+"' target='_blank' rel='noopener'>سياسة الخصوصية بالتفصيل</a></p>",
+      [{t:"تسجيل الدخول بحساب Google",c:"btn-p",f:function(){M.signIn()}},{t:"المتابعة دون تسجيل",c:"btn-s"}]);
+  };
+  $("sync-now").onclick=function(){M.syncNow()};
+  $("sync-out").onclick=function(){M.signOut()};
+  $("sync-del").onclick=function(){
+    modal("<h3>حذف بياناتك من الخادم</h3><p>سيُحذف حسابك ومحاولاتك المحفوظة في السحابة نهائيًا. تبقى نسختك المحفوظة في هذا المتصفح كما هي.</p>",
+      [{t:"حذف نهائيًا",c:"btn-d",f:function(){M.deleteData()}},{t:"إلغاء",c:"btn-s"}]);
+  };
+  var LBL={idle:"",syncing:"جارٍ المزامنة…",synced:"✓ تمت المزامنة","signed-in":"",error:""};
+  M.on(function(s){
+    var u=s.user;
+    $("sync-open").hidden=!!u; $("sync-in").hidden=!u;
+    $("sync-desc").textContent=u?("مسجَّل الدخول: "+(u.email||u.displayName||"")+" — يُرفع تقدمك تلقائيًا بعد كل تسليم."):"تعمل الاختبارات كاملةً دون تسجيل دخول، ويُحفظ تقدمك في هذا المتصفح. سجّل الدخول إن أردت الوصول إلى تقدمك من أي جهاز.";
+    var st=$("sync-st"); st.textContent=s.error||LBL[s.status]||""; st.className="st"+(s.error?" err":"");
+  });
+  window.addEventListener("msync-changed",render);
+})();
 </script>
 </body></html>

@@ -36,6 +36,16 @@ h1{color:var(--brand);font-size:24px;margin:4px 0 4px}
 .juz.disabled{opacity:.5;pointer-events:none}
 .warn{background:#fcf3dc;border:1px solid #ecd9a6;border-right:5px solid #c9a227;color:#5c4a14;border-radius:8px;padding:12px 16px;margin:0 0 18px;font-size:15px}
 .warn a{color:#4B365F;font-weight:700}
+.sync{background:var(--card);border-radius:10px;padding:12px 16px;margin:0 0 18px;box-shadow:0 1px 3px rgba(0,0,0,.07);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.sync .t{flex:1;min-width:220px;font-size:14px}
+.sync .t small{display:block;color:var(--muted)}
+.btn{font-family:inherit;border:0;border-radius:6px;padding:7px 16px;font-size:14px;cursor:pointer}
+.btn-p{background:var(--brand);color:#fff}.btn-s{background:#e4e2e8;color:#333}.btn-d{background:#fff;color:#8a2b2b;border:1px solid #e3b3b3}
+.sync .st{font-size:13px;color:var(--muted)}.sync .st.err{color:#8a2b2b}
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.mdl{background:#fff;border-radius:10px;max-width:520px;width:100%;padding:20px;max-height:90vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.mdl h3{margin:0 0 8px;color:var(--brand)}.mdl ul{margin:6px 0 10px;padding-inline-start:20px}.mdl .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+[hidden]{display:none!important}
 .foot{margin-top:18px;font-size:13px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .foot button{font-family:inherit;border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 12px;cursor:pointer}
 @media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
@@ -46,6 +56,17 @@ h1{color:var(--brand);font-size:24px;margin:4px 0 4px}
   <div class="warn" role="note"><b>⚠️ تنبيه:</b> هذه الأسئلة مولَّدة بالذكاء الاصطناعي وقد تحتوي على أخطاء. بعد كل اختبار راجع في صفحة المراجعة مرجع الإجابة الصحيحة، فهو منقول دائمًا بنصه الحرفي من «المختصر في تفسير القرآن الكريم» للتحقق والتوثيق. لمزيد من المعلومات أو للإبلاغ عن خطأ: <a href="https://github.com/hammady/moddaker-mukhtasar-quizzes" target="_blank" rel="noopener">مستودع المشروع على GitHub</a>.</div>
   <h1>تقدمي في اختبارات الأجزاء الثلاثين</h1>
   <p class="sub">مصدر الأسئلة: «المختصر في تفسير القرآن الكريم» فقط — 50 سؤالًا لكل جزء (40 للمعاني الصعبة والغريبة + 10 لفوائد الآيات).</p>
+  <div class="sync" id="sync" hidden>
+    <div class="t"><b>☁️ مزامنة التقدم (اختيارية)</b>
+      <small id="sync-desc">تعمل الاختبارات كاملةً دون تسجيل دخول، ويُحفظ تقدمك في هذا المتصفح. سجّل الدخول إن أردت الوصول إلى تقدمك من أي جهاز.</small></div>
+    <span class="st" id="sync-st"></span>
+    <button class="btn btn-p" id="sync-open">تسجيل الدخول للمزامنة</button>
+    <span id="sync-in" hidden style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-s" id="sync-now">مزامنة الآن</button>
+      <button class="btn btn-s" id="sync-out">تسجيل الخروج</button>
+      <button class="btn btn-d" id="sync-del">حذف بياناتي من الخادم</button>
+    </span>
+  </div>
   <div class="stats">
     <div class="stat"><div class="v" id="s-done">0/30</div><div class="k">أجزاء اختُبرت</div></div>
     <div class="stat"><div class="v" id="s-avg">—</div><div class="k">متوسط أعلى درجة</div></div>
@@ -68,6 +89,157 @@ h1{color:var(--brand);font-size:24px;margin:4px 0 4px}
     <input type="file" id="impf" accept=".json" hidden>
   </div>
 </div>
+<script>window.FIREBASE_CFG={"apiKey": "AIzaSyD5fg9kgGcEnX1axzL4AlL5ps5mWNoWrSY", "authDomain": "moddaker-mukhtasar-quizzes.firebaseapp.com", "projectId": "moddaker-mukhtasar-quizzes", "storageBucket": "moddaker-mukhtasar-quizzes.firebasestorage.app", "messagingSenderId": "505493196188", "appId": "1:505493196188:web:5c910d6e62ac97991f8c59"};</script>
+<script>/* مزامنة اختيارية للتقدم عبر Firebase (Google sign-in + Firestore).
+ * لا يُحمَّل شيء من Firebase إلا إذا ضغط المستخدم «تسجيل الدخول» أو كان قد سجّل الدخول سابقًا.
+ * المتصفح هو النسخة الأساسية دائمًا؛ السحابة نسخة إضافية. */
+(function () {
+  "use strict";
+  var CFG = window.FIREBASE_CFG;
+  var NS = "moddaker-mukhtasar", FLAG = NS + ":syncOn", DONE = NS + ":synced", LAST = NS + ":lastPull";
+  var SDK = "https://www.gstatic.com/firebasejs/10.14.1/";
+  var S = { fb: null, booting: null, user: null, status: "idle", err: "", cbs: [], busy: false, again: false };
+
+  function get(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  function set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function enabled() { return !!(CFG && CFG.apiKey) && /^https?:$/.test(location.protocol); }
+  function emit(status, err) {
+    if (status) S.status = status;
+    S.err = err || "";
+    S.cbs.forEach(function (cb) { try { cb({ user: S.user, status: S.status, error: S.err }); } catch (e) {} });
+  }
+
+  /* ---- attempt <-> compact Firestore document (Firestore has no nested arrays) ---- */
+  function enc(juz, a) {
+    return {
+      juz: juz, started: a.started, finished: a.finished, marks: a.marks, total: a.total, timeout: !!a.timeout,
+      slots: a.slots.map(function (s) { return [s.id, s.order.join(""), s.resp === null ? -1 : s.resp, s.flag ? 1 : 0, s.ok ? 1 : 0].join("|"); })
+    };
+  }
+  function dec(d) {
+    return {
+      started: d.started, finished: d.finished, marks: d.marks, total: d.total, timeout: !!d.timeout,
+      slots: d.slots.map(function (t) {
+        var x = t.split("|");
+        return { id: x[0], order: x[1].split("").map(Number), resp: +x[2] < 0 ? null : +x[2], flag: x[3] === "1", ok: x[4] === "1" };
+      })
+    };
+  }
+  function docId(juz, a) { return juz + "_" + a.started; }
+  function localKeys() {
+    var out = [];
+    try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k.indexOf(NS + ":attempts:") === 0) out.push(k); } } catch (e) {}
+    return out;
+  }
+  function mergeLocal(juz, a) {
+    var k = NS + ":attempts:" + juz, list = get(k, []);
+    if (list.some(function (x) { return x.started === a.started; })) return false;
+    list.push(a); list.sort(function (x, y) { return x.started - y.started; }); set(k, list);
+    return true;
+  }
+
+  /* ---- Firebase boot (lazy) ---- */
+  function boot() {
+    if (S.booting) return S.booting;
+    S.booting = Promise.all([import(SDK + "firebase-app.js"), import(SDK + "firebase-auth.js"), import(SDK + "firebase-firestore.js")]).then(function (m) {
+      var app = m[0].initializeApp(CFG);
+      S.fb = { auth: m[1], fs: m[2], a: m[1].getAuth(app), db: m[2].getFirestore(app) };
+      S.fb.auth.onAuthStateChanged(S.fb.a, function (u) { S.user = u; emit(u ? "signed-in" : "idle"); if (u) syncNow(); });
+      return S.fb;
+    }).catch(function (e) { S.booting = null; emit("error", "تعذّر تحميل خدمة المزامنة. تحقق من الاتصال بالإنترنت."); throw e; });
+    return S.booting;
+  }
+
+  /* ---- sync: pull new cloud attempts, push local ones not yet uploaded ---- */
+  function syncNow() {
+    if (!S.user || !S.fb) return Promise.resolve();
+    if (S.busy) { S.again = true; return Promise.resolve(); }
+    S.busy = true; emit("syncing");
+    var fs = S.fb.fs, col = fs.collection(S.fb.db, "users", S.user.uid, "attempts");
+    var last = +get(LAST, 0) || 0, done = {}, maxAt = last, pulled = 0;
+    get(DONE, []).forEach(function (id) { done[id] = 1; });
+    var q = last ? fs.query(col, fs.where("at", ">", fs.Timestamp.fromMillis(last))) : col;
+    return fs.getDocs(q).then(function (snap) {
+      snap.forEach(function (d) {
+        var x = d.data();
+        if (mergeLocal(x.juz, dec(x))) pulled++;
+        done[d.id] = 1;
+        if (x.at && x.at.toMillis() > maxAt) maxAt = x.at.toMillis();
+      });
+      var jobs = [];
+      localKeys().forEach(function (k) {
+        var juz = k.slice((NS + ":attempts:").length);
+        get(k, []).forEach(function (a) {
+          var id = docId(juz, a);
+          if (done[id]) return;
+          var data = enc(juz, a); data.at = fs.serverTimestamp();
+          jobs.push(fs.setDoc(fs.doc(S.fb.db, "users", S.user.uid, "attempts", id), data).then(function () { done[id] = 1; }));
+        });
+      });
+      return Promise.all(jobs);
+    }).then(function () {
+      set(DONE, Object.keys(done)); if (maxAt) set(LAST, maxAt);
+      emit("synced");
+      if (pulled) window.dispatchEvent(new Event("msync-changed"));
+    }).catch(function (e) {
+      emit("error", e && e.code === "permission-denied" ? "رُفض الوصول: تحقق من قواعد Firestore." : "تعذّرت المزامنة الآن؛ ستُعاد تلقائيًا عند المحاولة التالية.");
+    }).then(function () {
+      S.busy = false; if (S.again) { S.again = false; return syncNow(); }
+    });
+  }
+
+  /* ---- public API ---- */
+  var API = {
+    enabled: enabled,
+    on: function (cb) { S.cbs.push(cb); cb({ user: S.user, status: S.status, error: S.err }); },
+    state: function () { return { user: S.user, status: S.status }; },
+    syncNow: syncNow,
+    onSubmit: function () { if (S.user) syncNow(); },
+    signIn: function () {
+      set(FLAG, 1);
+      return boot().then(function (fb) {
+        var p = new fb.auth.GoogleAuthProvider();
+        return fb.auth.signInWithPopup(fb.a, p).catch(function (e) {
+          if (e && (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment")) return fb.auth.signInWithRedirect(fb.a, p);
+          if (e && (e.code === "auth/popup-closed-by-user" || e.code === "auth/cancelled-popup-request")) { del(FLAG); return; }
+          throw e;
+        });
+      }).catch(function (e) {
+        if (e && e.code === "auth/unauthorized-domain") emit("error", "هذا الموقع غير مضاف إلى النطاقات المصرّح بها في Firebase.");
+        else if (S.status !== "error") emit("error", "تعذّر تسجيل الدخول.");
+      });
+    },
+    signOut: function () {
+      del(FLAG);
+      return (S.fb ? S.fb.auth.signOut(S.fb.a) : Promise.resolve()).then(function () { S.user = null; emit("idle"); });
+    },
+    /* يحذف محاولات المستخدم من الخادم ثم حسابه في Firebase. لا يمس النسخة المحلية في المتصفح. */
+    deleteData: function () {
+      if (!S.user || !S.fb) return Promise.resolve(false);
+      var fs = S.fb.fs, u = S.user;
+      emit("syncing");
+      return fs.getDocs(fs.collection(S.fb.db, "users", u.uid, "attempts")).then(function (snap) {
+        var jobs = []; snap.forEach(function (d) { jobs.push(fs.deleteDoc(d.ref)); });
+        return Promise.all(jobs);
+      }).then(function () {
+        return S.fb.auth.deleteUser(u).catch(function (e) {
+          if (e && e.code === "auth/requires-recent-login") {
+            return S.fb.auth.reauthenticateWithPopup(u, new S.fb.auth.GoogleAuthProvider()).then(function () { return S.fb.auth.deleteUser(S.fb.a.currentUser); });
+          }
+          throw e;
+        });
+      }).then(function () {
+        del(FLAG); del(DONE); del(LAST); S.user = null; emit("idle"); return true;
+      }).catch(function () { emit("error", "تعذّر حذف البيانات؛ حاول مرة أخرى."); return false; });
+    }
+  };
+  window.MSync = API;
+
+  /* استعادة الجلسة تلقائيًا إن كان المستخدم قد فعّل المزامنة سابقًا */
+  if (enabled() && get(FLAG, 0)) boot().catch(function () {});
+})();
+</script>
 <script>
 var JUZ = [{"juz": 1, "label": "من الفاتحة 1 إلى البقرة 141 (ص 01 إلى ص 21)", "count": 50, "file": "juz-01.html", "time": 60, "pages": [1, 21]}, {"juz": 2, "label": "من البقرة 142 إلى البقرة 252 (ص 22 إلى ص 41)", "count": 50, "file": "juz-02.html", "time": 60, "pages": [22, 41]}, {"juz": 3, "label": "من البقرة 253 إلى آل عمران 92 (ص 42 إلى ص 61)", "count": 50, "file": "juz-03.html", "time": 60, "pages": [42, 61]}, {"juz": 4, "label": "من آل عمران 93 إلى النساء 23 (ص 62 إلى ص 81)", "count": 50, "file": "juz-04.html", "time": 60, "pages": [62, 81]}, {"juz": 5, "label": "من النساء 24 إلى النساء 147 (ص 82 إلى ص 101)", "count": 50, "file": "juz-05.html", "time": 60, "pages": [82, 101]}, {"juz": 6, "label": "من النساء 148 إلى المائدة 81 (ص 102 إلى ص 121)", "count": 50, "file": "juz-06.html", "time": 60, "pages": [102, 121]}, {"juz": 7, "label": "من المائدة 82 إلى الأنعام 110 (ص 122 إلى ص 141)", "count": 50, "file": "juz-07.html", "time": 60, "pages": [122, 141]}, {"juz": 8, "label": "من الأنعام 111 إلى الأعراف 87 (ص 142 إلى ص 161)", "count": 50, "file": "juz-08.html", "time": 60, "pages": [142, 161]}, {"juz": 9, "label": "من الأعراف 88 إلى الأنفال 40 (ص 162 إلى ص 181)", "count": 50, "file": "juz-09.html", "time": 60, "pages": [162, 181]}, {"juz": 10, "label": "من الأنفال 41 إلى التوبة 92 (ص 182 إلى ص 201)", "count": 50, "file": "juz-10.html", "time": 60, "pages": [182, 201]}, {"juz": 11, "label": "من التوبة 93 إلى هود 5 (ص 202 إلى ص 221)", "count": 50, "file": "juz-11.html", "time": 60, "pages": [202, 221]}, {"juz": 12, "label": "من هود 6 إلى يوسف 52 (ص 222 إلى ص 241)", "count": 50, "file": "juz-12.html", "time": 60, "pages": [222, 241]}, {"juz": 13, "label": "من يوسف 53 إلى إبراهيم 52 (ص 242 إلى ص 261)", "count": 50, "file": "juz-13.html", "time": 60, "pages": [242, 261]}, {"juz": 14, "label": "من الحجر 1 إلى النحل 128 (ص 262 إلى ص 281)", "count": 50, "file": "juz-14.html", "time": 60, "pages": [262, 281]}, {"juz": 15, "label": "من الإسراء 1 إلى الكهف 74 (ص 282 إلى ص 301)", "count": 50, "file": "juz-15.html", "time": 60, "pages": [282, 301]}, {"juz": 16, "label": "من الكهف 75 إلى طه 135 (ص 302 إلى ص 321)", "count": 50, "file": "juz-16.html", "time": 60, "pages": [302, 321]}, {"juz": 17, "label": "من الأنبياء 1 إلى الحج 78 (ص 322 إلى ص 341)", "count": 50, "file": "juz-17.html", "time": 60, "pages": [322, 341]}, {"juz": 18, "label": "من المؤمنون 1 إلى الفرقان 20 (ص 342 إلى ص 361)", "count": 50, "file": "juz-18.html", "time": 60, "pages": [342, 361]}, {"juz": 19, "label": "من الفرقان 21 إلى النمل 55 (ص 362 إلى ص 381)", "count": 50, "file": "juz-19.html", "time": 60, "pages": [362, 381]}, {"juz": 20, "label": "من النمل 56 إلى العنكبوت 45 (ص 382 إلى ص 401)", "count": 50, "file": "juz-20.html", "time": 60, "pages": [382, 401]}, {"juz": 21, "label": "من العنكبوت 46 إلى الأحزاب 30 (ص 402 إلى ص 421)", "count": 50, "file": "juz-21.html", "time": 60, "pages": [402, 421]}, {"juz": 22, "label": "من الأحزاب 31 إلى يس 27 (ص 422 إلى ص 441)", "count": 50, "file": "juz-22.html", "time": 60, "pages": [422, 441]}, {"juz": 23, "label": "من يس 28 إلى الزمر 31 (ص 442 إلى ص 461)", "count": 50, "file": "juz-23.html", "time": 60, "pages": [442, 461]}, {"juz": 24, "label": "من الزمر 32 إلى فصلت 46 (ص 462 إلى ص 481)", "count": 50, "file": "juz-24.html", "time": 60, "pages": [462, 481]}, {"juz": 25, "label": "من فصلت 47 إلى الجاثية 37 (ص 482 إلى ص 501)", "count": 50, "file": "juz-25.html", "time": 60, "pages": [482, 501]}, {"juz": 26, "label": "من الأحقاف 1 إلى الذاريات 30 (ص 502 إلى ص 521)", "count": 50, "file": "juz-26.html", "time": 60, "pages": [502, 521]}, {"juz": 27, "label": "من الذاريات 31 إلى الحديد 29 (ص 522 إلى ص 541)", "count": 50, "file": "juz-27.html", "time": 60, "pages": [522, 541]}, {"juz": 28, "label": "من المجادلة 1 إلى التحريم 12 (ص 542 إلى ص 561)", "count": 50, "file": "juz-28.html", "time": 60, "pages": [542, 561]}, {"juz": 29, "label": "من الملك 1 إلى المرسلات 50 (ص 562 إلى ص 581)", "count": 50, "file": "juz-29.html", "time": 60, "pages": [562, 581]}, {"juz": 30, "label": "من النبأ 1 إلى الناس 6 (ص 582 إلى ص 604)", "count": 50, "file": "juz-30.html", "time": 60, "pages": [582, 604]}];
 var NS = "moddaker-mukhtasar";
@@ -115,5 +287,44 @@ document.getElementById("imp").onclick=function(){document.getElementById("impf"
 document.getElementById("impf").onchange=function(e){var f=e.target.files[0];if(!f)return;f.text().then(function(t){try{var o=JSON.parse(t);Object.keys(o).forEach(function(k){if(k.indexOf(NS)===0)localStorage.setItem(k,o[k])});render()}catch(err){alert("ملف غير صالح")}})};
 window.addEventListener("storage",render);window.addEventListener("focus",render);
 render();
+
+/* ---- optional cloud sync UI ---- */
+(function(){
+  var M=window.MSync; if(!M||!M.enabled()) return;
+  var $=function(i){return document.getElementById(i)};
+  var REPO="https://github.com/hammady/moddaker-mukhtasar-quizzes#الخصوصية";
+  $("sync").hidden=false;
+  function modal(html,btns){
+    var bg=document.createElement("div");bg.className="mbg";
+    bg.innerHTML="<div class='mdl' role='dialog'>"+html+"<div class='row'></div></div>";
+    var row=bg.querySelector(".row");
+    btns.forEach(function(b){var e=document.createElement("button");e.className="btn "+b.c;e.textContent=b.t;e.onclick=function(){bg.remove();b.f&&b.f()};row.appendChild(e)});
+    document.body.appendChild(bg);
+  }
+  $("sync-open").onclick=function(){
+    modal("<h3>مزامنة التقدم (اختيارية)</h3>"+
+      "<p>يمكنك استخدام الاختبارات كاملةً دون تسجيل دخول، ويُحفظ تقدمك في هذا المتصفح فقط، مع إمكانية التصدير والاستيراد.<br>إذا أردت الوصول إلى تقدمك من أي جهاز، يمكنك تسجيل الدخول بحساب Google.</p>"+
+      "<b>ما الذي يُحفظ عند تسجيل الدخول؟</b><ul>"+
+      "<li>من حساب Google: بريدك الإلكتروني واسمك وصورتك (لدى خدمة الدخول Firebase)، ويمكن لمشرف الموقع رؤيتها.</li>"+
+      "<li>نتائج محاولاتك فقط: الجزء، والوقت، وإجاباتك، ودرجتك.</li></ul>"+
+      "<p>لا نصل إلى أي بيانات أخرى في حسابك، ولا نستخدم أدوات تتبع أو إعلانات، ولا نشارك بياناتك مع أحد. يمكنك تسجيل الخروج أو حذف بياناتك من الخادم في أي وقت.</p>"+
+      "<p><a href='"+REPO+"' target='_blank' rel='noopener'>سياسة الخصوصية بالتفصيل</a></p>",
+      [{t:"تسجيل الدخول بحساب Google",c:"btn-p",f:function(){M.signIn()}},{t:"المتابعة دون تسجيل",c:"btn-s"}]);
+  };
+  $("sync-now").onclick=function(){M.syncNow()};
+  $("sync-out").onclick=function(){M.signOut()};
+  $("sync-del").onclick=function(){
+    modal("<h3>حذف بياناتك من الخادم</h3><p>سيُحذف حسابك ومحاولاتك المحفوظة في السحابة نهائيًا. تبقى نسختك المحفوظة في هذا المتصفح كما هي.</p>",
+      [{t:"حذف نهائيًا",c:"btn-d",f:function(){M.deleteData()}},{t:"إلغاء",c:"btn-s"}]);
+  };
+  var LBL={idle:"",syncing:"جارٍ المزامنة…",synced:"✓ تمت المزامنة","signed-in":"",error:""};
+  M.on(function(s){
+    var u=s.user;
+    $("sync-open").hidden=!!u; $("sync-in").hidden=!u;
+    $("sync-desc").textContent=u?("مسجَّل الدخول: "+(u.email||u.displayName||"")+" — يُرفع تقدمك تلقائيًا بعد كل تسليم."):"تعمل الاختبارات كاملةً دون تسجيل دخول، ويُحفظ تقدمك في هذا المتصفح. سجّل الدخول إن أردت الوصول إلى تقدمك من أي جهاز.";
+    var st=$("sync-st"); st.textContent=s.error||LBL[s.status]||""; st.className="st"+(s.error?" err":"");
+  });
+  window.addEventListener("msync-changed",render);
+})();
 </script>
 </body></html>
