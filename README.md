@@ -19,20 +19,20 @@
 | `assets/` | قالب الاختبار (`quiz.js`, `quiz.css`) والصفحة الرئيسية (`dashboard.html`) |
 | `tools/build.py` | يولّد صفحات `docs/` من البيانات |
 | `tools/validate.py` | يتحقق من أن كل إجابة ونص آية مأخوذ حرفيًا من المختصر |
-| `QUESTION_GUIDE.md` | مواصفات كتابة الأسئلة |
-| `ERROR_PATTERNS.md` | أنماط الأخطاء في تقييمات مُدَّكِر السابقة التي تستهدفها الخيارات الخاطئة |
+| [QUESTION_GUIDE.md](QUESTION_GUIDE.md) | مواصفات كتابة الأسئلة |
+| [ERROR_PATTERNS.md](ERROR_PATTERNS.md) | أنماط الأخطاء في تقييمات مُدَّكِر السابقة التي تستهدفها الخيارات الخاطئة |
 
 ## تغيير الأسئلة
 
 1. نزّل نص المختصر محليًا: `python3 tools/download_mukhtasar.py source` ثم `python3 tools/make_digest.py`
-2. عدّل أو أعد توليد `data/juz-NN.json` وفق `QUESTION_GUIDE.md`
+2. عدّل أو أعد توليد `data/juz-NN.json` وفق [QUESTION_GUIDE.md](QUESTION_GUIDE.md)
 3. `python3 tools/validate.py` ثم `python3 tools/build.py`
 
 مصدر النصوص: خادم Tafsir MCP (مركز تفسير للدراسات القرآنية) — `mukhtasar_ar` و`get_page_fawaed`.
 
 ## الترخيص
 
-MIT — انظر `LICENSE`.
+MIT — انظر [LICENSE](LICENSE).
 
 ## الخصوصية
 
@@ -43,7 +43,7 @@ MIT — انظر `LICENSE`.
 - لا نصل إلى أي بيانات أخرى في حسابك، ولا نستخدم أدوات تحليل أو إعلانات، ولا نشارك البيانات مع أحد.
 - من الصفحة الرئيسية يمكنك **تسجيل الخروج** (يبقى تقدمك في المتصفح) أو **حذف بياناتك من الخادم** (يُحذف حسابك ومحاولاتك السحابية).
 - تُحمَّل خطوط الصفحات من Google Fonts، فيرى Google عنوان IP للزائر.
-- تفاصيل الإعداد للمشرف: `SYNC_SETUP.md`.
+- تفاصيل الإعداد للمشرف: [SYNC_SETUP.md](SYNC_SETUP.md).
 
 ---
 
