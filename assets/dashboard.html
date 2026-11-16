@@ -161,7 +161,7 @@ render();
       "<li>نتائج محاولاتك فقط: الجزء، والوقت، وإجاباتك، ودرجتك.</li>"+
       "<li>يُحفظ حتى 5 محاولات لكل جزء (150 كحد أقصى)، ويمكنك حذف أي محاولة في أي وقت.</li></ul>"+
       "<p>لا نصل إلى أي بيانات أخرى في حسابك، ولا نستخدم أدوات تتبع أو إعلانات، ولا نشارك بياناتك مع أحد. يمكنك تسجيل الخروج أو حذف بياناتك من الخادم في أي وقت.</p>"+
-      "<p><a href='"+REPO+"' target='_blank' rel='noopener'>سياسة الخصوصية بالتفصيل</a></p>",
+      "<p><a href='"+REPO+"' target='_blank' rel='noopener'>سياسة الخصوصية بالتفصيل</a><br>للتواصل أو لطلب حذف بياناتك: <a href='mailto:github@hammady.net'>github@hammady.net</a></p>",
       [{t:"تسجيل الدخول بحساب Google",c:"btn-p",f:function(){M.signIn()}},{t:"المتابعة دون تسجيل",c:"btn-s"}]);
     var go=document.querySelector(".mdl .btn-p"); if(go){var lbl=go.textContent; go.disabled=true; go.textContent="جارٍ التحميل…"; ready.then(function(ok){ if(ok){go.disabled=false;go.textContent=lbl}else{go.textContent="تعذّر التحميل، أعد المحاولة"} });}
   };
