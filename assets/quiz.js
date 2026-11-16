@@ -1,8 +1,8 @@
-/* محاكي اختبارات مُدَّكِر — يعمل بلا خادم. البيانات في window.QUIZ */
+/* واجهة الاختبار — تعمل بلا خادم. البيانات في window.QUIZ */
 (function () {
   "use strict";
   var Q = window.QUIZ;
-  var NS = "moddaker-mukhtasar";
+  var NS = "mukhtasar-quizzes";
   var KEY_ATT = NS + ":attempts:" + Q.id;
   var KEY_CUR = NS + ":current:" + Q.id;
   var MAXA = (window.MSync && window.MSync.MAX) || 5;
@@ -78,7 +78,7 @@
   }
 
   /* ---------- views ---------- */
-  function setTitle(sub) { document.title = Q.title + (sub ? ": " + sub : "") + " | مدكر"; }
+  function setTitle(sub) { document.title = Q.title + (sub ? " — " + sub : ""); }
   function stopTimer() { if (timerHandle) { clearInterval(timerHandle); timerHandle = null; } var t = document.getElementById("tbtimer"); if (t) t.textContent = ""; }
 
   function viewStart() {
@@ -91,7 +91,7 @@
     }).join("");
     app.innerHTML =
       "<div class='crumbs'><a href='" + Q.home + "'>الصفحة الرئيسية</a> / " + esc(Q.title) + "</div>" +
-      "<div class='card'><h1 class='qtitle'>" + esc(Q.title) + "</h1>" +
+      "<div class='card'><h1 class='qtitle'>" + esc(Q.title) + "</h1><p style='margin:-6px 0 12px;color:var(--muted)'>" + esc(Q.range || "") + "</p>" +
       "<div class='notice'>" + esc(Q.description) + "</div>" +
       "<div class='quizinfo'><p>عدد الأسئلة: " + (Q.questions_per_attempt || Q.questions.length) + " سؤالًا (ترتيب عشوائي للأسئلة والخيارات)</p><p>المحاولات: غير محدودة العدد، لكن يُحفظ منها حتى " + MAXA + " في كل جزء في الوقت نفسه. احذف محاولة قديمة لتبدأ محاولة جديدة.</p><p>المحاولات المحفوظة الآن: " + all.length + " من " + MAXA + "</p><p>الحد الزمني: " + Q.time_limit_min + " دقيقة</p><p>طريقة التقييم: أعلى درجة</p></div>" +
       (all.length ? "<h3>ملخص محاولاتك السابقة</h3><table class='gen'><thead><tr><th class='center'>المحاولة</th><th>الحالة</th><th class='center'>العلامات / " + all[0].total.toFixed(2) + "</th><th class='center'>الدرجة / 100.00</th><th class='center'>مراجعة</th><th class='center'>حذف</th></tr></thead><tbody>" + rows + "</tbody></table>" +

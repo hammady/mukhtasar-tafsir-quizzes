@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>تقدم الاختبار الشامل | مدكر</title>
+<title>اختبارات مراجعة المختصر في التفسير</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -35,6 +35,7 @@ h1{color:var(--brand);font-size:24px;margin:4px 0 4px}
 .juz .meta{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
 .juz.disabled{opacity:.5;pointer-events:none}
 .warn{background:#fcf3dc;border:1px solid #ecd9a6;border-right:5px solid #c9a227;color:#5c4a14;border-radius:8px;padding:12px 16px;margin:0 0 18px;font-size:15px}
+.warn.info{background:#e8f1fb;border-color:#b9d3f0;border-right-color:#3b78c2;color:#1d3b5e}
 .warn a{color:#4B365F;font-weight:700}
 .sync{background:var(--card);border-radius:10px;padding:12px 16px;margin:0 0 18px;box-shadow:0 1px 3px rgba(0,0,0,.07);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .sync .t{flex:1;min-width:220px;font-size:14px}
@@ -51,11 +52,12 @@ h1{color:var(--brand);font-size:24px;margin:4px 0 4px}
 @media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
 </style></head>
 <body>
-<div class="topbar">برنامج مُدَّكِر — التحضير للاختبار الشامل</div>
+<div class="topbar">اختبارات مراجعة المختصر في التفسير</div>
 <div class="wrap">
-  <div class="warn" role="note"><b>⚠️ تنبيه:</b> هذه الأسئلة مولَّدة بالذكاء الاصطناعي وقد تحتوي على أخطاء. بعد كل اختبار راجع في صفحة المراجعة مرجع الإجابة الصحيحة، فهو منقول دائمًا بنصه الحرفي من «المختصر في تفسير القرآن الكريم» للتحقق والتوثيق. لمزيد من المعلومات أو للإبلاغ عن خطأ: <a href="https://github.com/hammady/moddaker-mukhtasar-quizzes" target="_blank" rel="noopener">مستودع المشروع على GitHub</a>.</div>
-  <h1>تقدمي في اختبارات الأجزاء الثلاثين</h1>
-  <p class="sub">مصدر الأسئلة: «المختصر في تفسير القرآن الكريم» فقط — 50 سؤالًا لكل جزء (40 للمعاني الصعبة والغريبة + 10 لفوائد الآيات).</p>
+  <div class="warn info" role="note"><b>ℹ️ استقلالية الموقع:</b> هذا الموقع جهد طلابي مستقل، ولا علاقة له ببرنامج التعلم الرسمي الذي تُدرَّس فيه هذه المادة، ولا تزكية أو اعتماد منه.</div>
+  <div class="warn" role="note"><b>⚠️ تنبيه:</b> هذه الأسئلة مولَّدة بالذكاء الاصطناعي وقد تحتوي على أخطاء. بعد كل اختبار راجع في صفحة المراجعة مرجع الإجابة الصحيحة، فهو منقول دائمًا بنصه الحرفي من «المختصر في تفسير القرآن الكريم» للتحقق والتوثيق. لمزيد من المعلومات أو للإبلاغ عن خطأ: <a href="https://github.com/hammady/mukhtasar-tafsir-quizzes" target="_blank" rel="noopener">مستودع المشروع على GitHub</a>.</div>
+  <h1>اختبارات مراجعة المختصر في التفسير</h1>
+  <p class="sub"><b>تقدمك في اختبارات الأجزاء الثلاثين.</b> مصدر الأسئلة: «المختصر في تفسير القرآن الكريم» فقط — 50 سؤالًا لكل جزء (40 للمعاني الصعبة والغريبة + 10 لفوائد الآيات).</p>
   <div class="sync" id="sync" hidden>
     <div class="t"><b>☁️ مزامنة التقدم (اختيارية)</b>
       <small id="sync-desc">تعمل الاختبارات كاملةً دون تسجيل دخول، ويُحفظ تقدمك في هذا المتصفح. سجّل الدخول إن أردت الوصول إلى تقدمك من أي جهاز.</small></div>
@@ -93,7 +95,7 @@ h1{color:var(--brand);font-size:24px;margin:4px 0 4px}
 <script>/*__SYNCJS__*/</script>
 <script>
 var JUZ = /*__JUZ__*/[];
-var NS = "moddaker-mukhtasar";
+var NS = "mukhtasar-quizzes";
 function load(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(e){return null}}
 function color(p){return p>=90?"var(--g90)":p>=80?"var(--g80)":p>=70?"var(--g70)":p>=60?"var(--g60)":"var(--g0)"}
 var AR_M=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
@@ -132,10 +134,10 @@ function render(){
 document.querySelectorAll(".chip").forEach(function(c){c.onclick=function(){document.querySelectorAll(".chip").forEach(function(x){x.classList.remove("on")});c.classList.add("on");filter=c.dataset.f;render()}});
 document.getElementById("exp").onclick=function(){
   var o={};try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k.indexOf(NS)===0)o[k]=localStorage.getItem(k)}}catch(e){}
-  var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:"application/json"}));a.download="moddaker-progress.json";a.click();
+  var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:"application/json"}));a.download="mukhtasar-quizzes-progress.json";a.click();
 };
 document.getElementById("imp").onclick=function(){document.getElementById("impf").click()};
-document.getElementById("impf").onchange=function(e){var f=e.target.files[0];if(!f)return;f.text().then(function(t){try{var o=JSON.parse(t);Object.keys(o).forEach(function(k){if(k.indexOf(NS)===0)localStorage.setItem(k,o[k])});render()}catch(err){alert("ملف غير صالح")}})};
+document.getElementById("impf").onchange=function(e){var f=e.target.files[0];if(!f)return;f.text().then(function(t){try{var o=JSON.parse(t);Object.keys(o).forEach(function(k){var nk=(window.MSync&&MSync.normalizeKey)?MSync.normalizeKey(k):k;if(nk.indexOf(NS)===0)localStorage.setItem(nk,o[k])});render()}catch(err){alert("ملف غير صالح")}})};
 window.addEventListener("storage",render);window.addEventListener("focus",render);
 render();
 
@@ -143,7 +145,7 @@ render();
 (function(){
   var M=window.MSync; if(!M||!M.enabled()) return;
   var $=function(i){return document.getElementById(i)};
-  var REPO="https://github.com/hammady/moddaker-mukhtasar-quizzes#الخصوصية";
+  var REPO="https://github.com/hammady/mukhtasar-tafsir-quizzes#الخصوصية";
   $("sync").hidden=false;
   function modal(html,btns){
     var bg=document.createElement("div");bg.className="mbg";

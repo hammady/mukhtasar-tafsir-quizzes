@@ -29,8 +29,8 @@ function device() {
     location: { protocol: "https:" }, Event: function () {}, setTimeout, Promise, console, __FB_MOCK__: fake };
   sb.window = sb; sb.FIREBASE_CFG = { apiKey: "x" }; sb.addEventListener = () => {}; sb.dispatchEvent = () => {};
   vm.runInNewContext(SRC, sb);
-  return { M: sb.MSync, store, list: j => JSON.parse(store["moddaker-mukhtasar:attempts:" + j] || "[]"),
-    add: (j, started) => { const k = "moddaker-mukhtasar:attempts:" + j, l = JSON.parse(store[k] || "[]"); l.push({ started, finished: started + 1, marks: 1, total: 1, slots: [{ id: "q", order: [0, 1, 2], resp: 0, flag: false, ok: true }] }); store[k] = JSON.stringify(l); } };
+  return { M: sb.MSync, store, list: j => JSON.parse(store["mukhtasar-quizzes:attempts:" + j] || "[]"),
+    add: (j, started) => { const k = "mukhtasar-quizzes:attempts:" + j, l = JSON.parse(store[k] || "[]"); l.push({ started, finished: started + 1, marks: 1, total: 1, slots: [{ id: "q", order: [0, 1, 2], resp: 0, flag: false, ok: true }] }); store[k] = JSON.stringify(l); } };
 }
 const live = () => Object.entries(remote).filter(([, d]) => !d.deleted).map(([k, d]) => k.split("/").pop() + ":" + d.started);
 const sync = async d => { await d.M.signIn(); await new Promise(r => setTimeout(r, 20)); await d.M.syncNow(); await new Promise(r => setTimeout(r, 20)); };

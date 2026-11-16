@@ -6,8 +6,16 @@
 (function () {
   "use strict";
   var CFG = window.FIREBASE_CFG;
-  var NS = "moddaker-mukhtasar", FLAG = NS + ":syncOn", ST = NS + ":sync", AK = NS + ":attempts:";
+  var NS = "mukhtasar-quizzes", FLAG = NS + ":syncOn", ST = NS + ":sync", AK = NS + ":attempts:";
   var MAX = 5;
+  var LEGACY = "mod" + "daker-mukhtasar";   // بادئة مفاتيح قديمة (قبل إعادة التسمية): تُنقل مرة واحدة
+  (function migrate() {
+    try {
+      var ks = [];
+      for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k.indexOf(LEGACY + ":") === 0) ks.push(k); }
+      ks.forEach(function (k) { var nk = NS + k.slice(LEGACY.length); if (localStorage.getItem(nk) === null) localStorage.setItem(nk, localStorage.getItem(k)); localStorage.removeItem(k); });
+    } catch (e) {}
+  })();
   var SDK = "https://www.gstatic.com/firebasejs/10.14.1/";
   var S = { fb: null, booting: null, user: null, status: "idle", err: "", cbs: [], busy: false, again: false };
 
@@ -191,6 +199,7 @@
   /* ---- واجهة عامة ---- */
   var API = {
     MAX: MAX,
+    normalizeKey: function (k) { return k.indexOf(LEGACY + ":") === 0 ? NS + k.slice(LEGACY.length) : k; },
     enabled: enabled,
     on: function (cb) { S.cbs.push(cb); cb({ user: S.user, status: S.status, error: S.err }); },
     state: function () { return { user: S.user, status: S.status }; },

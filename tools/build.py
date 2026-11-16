@@ -29,12 +29,12 @@ AR_ORD = ["", "الأول", "الثاني", "الثالث", "الرابع", "ا�
 PAGE = """<!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title} | مدكر</title>
+<title>{title}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 <style>{css}</style></head>
 <body>
-<div class="topbar"><span class="t">برنامج مُدَّكِر — الاختبار الشامل (تدريب): {short}</span><span class="tbt" id="tbtimer"></span><a href="index.html">الرئيسية</a></div>
+<div class="topbar"><span class="t">اختبارات مراجعة المختصر في التفسير — {short}</span><span class="tbt" id="tbtimer"></span><a href="index.html">الرئيسية</a></div>
 <div class="wrap"><div id="app"></div></div>
 <script>window.QUIZ = {data};</script>
 <script>window.FIREBASE_CFG = {fbcfg};</script>
@@ -52,7 +52,8 @@ for j in range(1, 31):
     qs = bank["questions"]
     quiz = {
         "id": f"juz-{j:02d}",
-        "title": f"اختبار الجزء {AR_ORD[j]} ({label(j)})",
+        "title": f"اختبارات مراجعة المختصر في التفسير — الجزء {AR_ORD[j]}",
+        "range": f"({label(j)})",
         "description": "أسئلة من «المختصر في تفسير القرآن الكريم» فقط: 40 سؤالًا في المعاني الصعبة والغريبة، و10 أسئلة في فوائد الآيات. تُعرض الأسئلة والخيارات بترتيب عشوائي في كل محاولة.",
         "time_limit_min": bank.get("time_limit_min", 60),
         "questions_per_attempt": bank.get("questions_per_attempt", len(qs)),
