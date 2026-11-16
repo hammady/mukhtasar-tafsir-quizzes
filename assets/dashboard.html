@@ -71,7 +71,7 @@ h1{color:var(--brand);font-size:24px;margin:4px 0 4px}
     <div class="stat"><div class="v" id="s-done">0/30</div><div class="k">أجزاء اختُبرت</div></div>
     <div class="stat"><div class="v" id="s-avg">—</div><div class="k">متوسط أعلى درجة</div></div>
     <div class="stat"><div class="v" id="s-ready">0</div><div class="k">أجزاء 90% فأكثر</div></div>
-    <div class="stat"><div class="v" id="s-att">0</div><div class="k">إجمالي المحاولات</div></div>
+    <div class="stat"><div class="v" id="s-att">0</div><div class="k">المحاولات المحفوظة</div></div>
   </div>
   <div class="overall"><div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px"><span>نسبة الإنجاز للاختبار الشامل</span><span id="s-pct">0%</span></div><div class="bar"><i id="s-bar" style="width:0"></i></div></div>
   <div class="toolbar">
@@ -118,7 +118,7 @@ function render(){
       "<div class='lbl'>"+j.label+"</div>"+
       "<div class='score'><span>أعلى درجة</span><b style='color:"+c+"'>"+(s.best>=0?Math.round(s.best)+"%":"—")+"</b></div>"+
       "<div class='bar'><i style='width:"+Math.max(0,s.best)+"%;background:"+c+"'></i></div>"+
-      "<div class='meta'><span>المحاولات: "+s.at.length+"</span><span>"+(s.last?"آخر: "+Math.round(s.last.marks/s.last.total*100)+"% · "+d(s.last.finished):(j.count?j.count+" سؤالًا · "+j.time+" دقيقة":"قريبًا"))+"</span></div></a>";
+      "<div class='meta'><span>المحاولات: "+s.at.length+"/"+(window.MSync?MSync.MAX:5)+"</span><span>"+(s.last?"آخر: "+Math.round(s.last.marks/s.last.total*100)+"% · "+d(s.last.finished):(j.count?j.count+" سؤالًا · "+j.time+" دقيقة":"قريبًا"))+"</span></div></a>";
   });
   g.innerHTML=html||"<p style='color:var(--muted)'>لا توجد أجزاء في هذا التصنيف.</p>";
   document.getElementById("s-done").textContent=done+"/30";
@@ -157,7 +157,8 @@ render();
       "<p>يمكنك استخدام الاختبارات كاملةً دون تسجيل دخول، ويُحفظ تقدمك في هذا المتصفح فقط، مع إمكانية التصدير والاستيراد.<br>إذا أردت الوصول إلى تقدمك من أي جهاز، يمكنك تسجيل الدخول بحساب Google.</p>"+
       "<b>ما الذي يُحفظ عند تسجيل الدخول؟</b><ul>"+
       "<li>من حساب Google: بريدك الإلكتروني واسمك وصورتك (لدى خدمة الدخول Firebase)، ويمكن لمشرف الموقع رؤيتها.</li>"+
-      "<li>نتائج محاولاتك فقط: الجزء، والوقت، وإجاباتك، ودرجتك.</li></ul>"+
+      "<li>نتائج محاولاتك فقط: الجزء، والوقت، وإجاباتك، ودرجتك.</li>"+
+      "<li>يُحفظ حتى 5 محاولات لكل جزء (150 كحد أقصى)، ويمكنك حذف أي محاولة في أي وقت.</li></ul>"+
       "<p>لا نصل إلى أي بيانات أخرى في حسابك، ولا نستخدم أدوات تتبع أو إعلانات، ولا نشارك بياناتك مع أحد. يمكنك تسجيل الخروج أو حذف بياناتك من الخادم في أي وقت.</p>"+
       "<p><a href='"+REPO+"' target='_blank' rel='noopener'>سياسة الخصوصية بالتفصيل</a></p>",
       [{t:"تسجيل الدخول بحساب Google",c:"btn-p",f:function(){M.signIn()}},{t:"المتابعة دون تسجيل",c:"btn-s"}]);

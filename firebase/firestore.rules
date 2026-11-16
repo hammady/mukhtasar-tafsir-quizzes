@@ -1,13 +1,15 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Each signed-in user can only touch their own attempts.
+    // Each user has at most 5 attempt slots per juz (30 x 5 = 150 documents):
+    // ids are juz-NN_1 .. juz-NN_5. A deleted attempt is a small marker in its slot.
     match /users/{uid}/attempts/{attemptId} {
       allow read, delete: if request.auth != null && request.auth.uid == uid;
       allow create, update: if request.auth != null && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['juz','started','finished','marks','total','timeout','slots','at'])
-        && request.resource.data.slots is list
-        && request.resource.data.slots.size() <= 60
+        && attemptId.matches('juz-(0[1-9]|[12][0-9]|30)_[1-5]')
+        && request.resource.data.keys().hasOnly(['juz','slot','started','finished','marks','total','timeout','slots','at','deleted'])
+        && request.resource.data.juz == attemptId.split('_')[0]
+        && request.resource.data.get('slots', []).size() <= 60
         && request.resource.data.at == request.time;
     }
   }

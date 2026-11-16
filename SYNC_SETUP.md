@@ -13,5 +13,9 @@
 9. `python3 tools/build.py` ثم commit وpush.
 
 ## نموذج البيانات
-`users/{uid}/attempts/{juz}_{started}` وثيقة لكل محاولة: `juz, started, finished, marks, total, timeout, slots[], at`.
-لا يُخزَّن اسم ولا بريد في Firestore؛ هما فقط في قائمة مستخدمي Firebase Authentication.
+- كل مستخدم له **5 خانات ثابتة لكل جزء**: `users/{uid}/attempts/juz-NN_{1..5}` (150 وثيقة كحد أقصى، تفرضه قواعد Firestore).
+- الوثيقة: `juz, slot, started, finished, marks, total, timeout, slots[], at`.
+- حذف المحاولة يكتب علامة حذف صغيرة في خانتها (`deleted: true`) فتصل إلى الأجهزة الأخرى، ويمكن إعادة استخدام الخانة. وإن كان المستخدم غير متصل يُنفَّذ الحذف السحابي عند الاتصال التالي.
+- عند دمج أجهزة يتجاوز مجموعها 5 محاولات لجزء واحد، تُحذف الأقدم.
+- لا يُخزَّن اسم ولا بريد في Firestore؛ هما فقط في قائمة مستخدمي Firebase Authentication.
+- الاختبارات: `node tests/sync.test.js` (Firestore وهمي في الذاكرة، جهازان).
