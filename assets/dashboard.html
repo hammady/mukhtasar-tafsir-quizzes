@@ -28,6 +28,7 @@ h1{color:var(--brand);font-size:24px;margin:4px 0 4px}
 .juz:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
 .juz .top{display:flex;justify-content:space-between;align-items:center}
 .juz .n{font-size:20px;font-weight:700;color:var(--brand)}
+.juz .pz{font-size:13px;color:#4B365F;cursor:help}
 .pill{font-size:12px;border-radius:10px;padding:2px 10px;background:#eee;color:#555}
 .juz .lbl{font-size:13px;color:var(--muted);min-height:40px}
 .juz .score{display:flex;justify-content:space-between;align-items:baseline;font-size:14px}
@@ -113,10 +114,12 @@ function render(){
     if(s.best>=0){done++;sum+=s.best;if(s.best>=90)ready++}
     var show = filter==="all" || (filter==="s1"&&j.juz<=15) || (filter==="s2"&&j.juz>15) || (filter==="todo"&&s.best<0) || (filter==="weak"&&s.best>=0&&s.best<90);
     if(!show) return;
-    var st = s.cur ? ["محاولة جارية","#fcf3dc","#8a6d1f"] : s.best<0 ? ["لم يُختبر","#eee","#666"] : s.best>=90 ? ["جاهز","#e3f1e5","#2f6b3a"] : ["يحتاج مراجعة","#f8e7e7","#8a2b2b"];
+    var paused = !!(s.cur && s.cur.paused != null);
+    var st = paused ? ["محاولة متوقفة","#e8e4f0","#4B365F"] : s.cur ? ["محاولة جارية","#fcf3dc","#8a6d1f"] : s.best<0 ? ["لم يُختبر","#eee","#666"] : s.best>=90 ? ["جاهز","#e3f1e5","#2f6b3a"] : ["يحتاج مراجعة","#f8e7e7","#8a2b2b"];
     var c = s.best>=0?color(s.best):"#d8d4de";
-    html += "<a class='juz"+(j.file?"":" disabled")+"' href='"+(j.file||"#")+(s.cur?"#attempt":"")+"' style='border-top-color:"+c+"'>"+
-      "<div class='top'><span class='n'>الجزء "+j.juz+"</span><span class='pill' style='background:"+st[1]+";color:"+st[2]+"'>"+st[0]+"</span></div>"+
+    var ptip = "توجد محاولة متوقفة مؤقتًا في هذا الجزء (غير محتسبة حتى تُستأنف وتُرسل)";
+    html += "<a class='juz"+(j.file?"":" disabled")+"' href='"+(j.file||"#")+(s.cur&&!paused?"#attempt":"")+"' style='border-top-color:"+c+"'"+(paused?" title='"+ptip+"'":"")+">"+
+      "<div class='top'><span class='n'>الجزء "+j.juz+(paused?" <span class='pz' title='"+ptip+"' aria-label='"+ptip+"'>⏸️</span>":"")+"</span><span class='pill' style='background:"+st[1]+";color:"+st[2]+"'>"+st[0]+"</span></div>"+
       "<div class='lbl'>"+j.label+"</div>"+
       "<div class='score'><span>أعلى درجة</span><b style='color:"+c+"'>"+(s.best>=0?Math.round(s.best)+"%":"—")+"</b></div>"+
       "<div class='bar'><i style='width:"+Math.max(0,s.best)+"%;background:"+c+"'></i></div>"+

@@ -99,3 +99,5 @@ table.reviewsum td{background:#f6f6f8;padding:8px 12px;border-bottom:1px solid #
   .qtext .stem{font-size:17px}.qtext .ayah{font-size:20px}
   table.reviewsum th{width:95px}
 }
+.pausebtn{margin:0 0 10px;font-size:13px;padding:4px 12px}
+.paused-note{display:inline-block;background:#efeaf6;border-color:#cfc3e0;color:#4B365F}
