@@ -13,6 +13,7 @@ from juz_meta import label, pages  # noqa: E402
 CSS = open(os.path.join(ROOT, "assets/quiz.css"), encoding="utf-8").read()
 JS = open(os.path.join(ROOT, "assets/quiz.js"), encoding="utf-8").read()
 SYNC = open(os.path.join(ROOT, "assets/sync.js"), encoding="utf-8").read()
+ZOOM = open(os.path.join(ROOT, "assets/zoom.js"), encoding="utf-8").read()
 try:
     FBCFG = json.dumps(json.load(open(os.path.join(ROOT, "assets/firebase-config.json"), encoding="utf-8")))
 except FileNotFoundError:
@@ -32,9 +33,10 @@ PAGE = """<!doctype html>
 <title>{title}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-<style>{css}</style></head>
+<style>{css}</style>
+<script>{zoom}</script></head>
 <body>
-<div class="topbar"><span class="t">اختبارات مراجعة المختصر في التفسير — {short}</span><span class="tbt" id="tbtimer"></span><a href="index.html">الرئيسية</a></div>
+<div class="topbar"><span class="t"><span class="tl">اختبارات مراجعة المختصر في التفسير — </span>{short}</span><span class="tbt" id="tbtimer"></span><a href="index.html">الرئيسية</a></div>
 <div class="wrap"><div id="app"></div></div>
 <script>window.QUIZ = {data};</script>
 <script>window.FIREBASE_CFG = {fbcfg};</script>
@@ -61,7 +63,7 @@ for j in range(1, 31):
         "questions": qs,
     }
     data = json.dumps(quiz, ensure_ascii=False).replace("</", "<\\/")
-    out = PAGE.format(title=html.escape(quiz["title"]), short=f"الجزء {j}", css=CSS, js=JS, data=data, fbcfg=FBCFG, sync=SYNC)
+    out = PAGE.format(title=html.escape(quiz["title"]), short=f"الجزء {j}", css=CSS, js=JS, data=data, fbcfg=FBCFG, sync=SYNC, zoom=ZOOM)
     open(os.path.join(OUT, f"juz-{j:02d}.html"), "w", encoding="utf-8").write(out)
     summary.append({"juz": j, "label": label(j), "count": len(qs), "file": f"juz-{j:02d}.html",
                     "time": quiz["time_limit_min"], "pages": list(pages(j))})

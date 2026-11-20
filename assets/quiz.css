@@ -35,7 +35,7 @@ table.gen tr:nth-child(even) td{background:#fafafa}
 .center{text-align:center}
 /* attempt layout */
 .attempt{display:grid;grid-template-columns:1fr 250px;gap:20px;align-items:start}
-.navblock{position:sticky;top:70px;background:var(--card);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:14px}
+.navblock{position:sticky;top:calc(70px / var(--z,1));background:var(--card);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:14px}
 .navblock h3{margin:0 0 8px;font-size:15px;color:var(--brand)}
 .timer{background:#fff;border:1px solid var(--line);border-radius:6px;padding:6px 10px;margin-bottom:10px;font-size:14px;text-align:center}
 .timer b{font-variant-numeric:tabular-nums;font-size:17px;direction:ltr;display:inline-block}
@@ -89,15 +89,22 @@ table.reviewsum td{background:#f6f6f8;padding:8px 12px;border-bottom:1px solid #
 .modal .mb{padding:16px 18px}
 .modal .mf{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-start}
 .hidden{display:none!important}
-@media (max-width:860px){
-  .attempt{grid-template-columns:1fr}
-  .navblock{position:static}
-  .qnb{width:30px;height:36px;font-size:12px}.qnb .n{height:22px;line-height:22px}
-  .que{flex-direction:column}
-  .que .info{flex:none;display:flex;gap:14px;align-items:center;flex-wrap:wrap;width:100%}
-  .que .info .no{margin:0}
-  .qtext .stem{font-size:17px}.qtext .ayah{font-size:20px}
-  table.reviewsum th{width:95px}
-}
+/* التخطيط الضيق: يُفعَّل بالصنف narrow من zoom.js (عرض الشاشة ÷ التكبير ≤ 860) ليتصرف مثل تكبير المتصفح */
+html.narrow .attempt{grid-template-columns:1fr}
+html.narrow .navblock{position:static}
+html.narrow .qnb{width:30px;height:36px;font-size:12px} html.narrow .qnb .n{height:22px;line-height:22px}
+html.narrow .que{flex-direction:column}
+html.narrow .que .info{flex:none;display:flex;gap:14px;align-items:center;flex-wrap:wrap;width:100%}
+html.narrow .que .info .no{margin:0}
+html.narrow .qtext .stem{font-size:17px} html.narrow .qtext .ayah{font-size:20px}
+html.narrow table.reviewsum th{width:95px}
 .pausebtn{margin:0 0 10px;font-size:13px;padding:4px 12px}
 .paused-note{display:inline-block;background:#efeaf6;border-color:#cfc3e0;color:#4B365F}
+.topbar .zoom{display:inline-flex;direction:ltr;flex:none;border:1px solid rgba(255,255,255,.4);border-radius:6px;overflow:hidden}
+.topbar .zoom button{background:transparent;color:#fff;border:0;font:inherit;font-size:16px;font-weight:700;min-width:32px;height:30px;padding:0 6px;cursor:pointer;touch-action:manipulation;line-height:1}
+.topbar .zoom #zv{font-size:12px;font-weight:400;min-width:44px;border-left:1px solid rgba(255,255,255,.3);border-right:1px solid rgba(255,255,255,.3);font-variant-numeric:tabular-nums}
+.topbar .zoom button:hover:not(:disabled){background:rgba(255,255,255,.15)}
+.topbar .zoom button:disabled{opacity:.4;cursor:default}
+/* تكبير المحتوى من zoom.js (مثل Cmd/Ctrl +/-)، دون الشريط العلوي */
+.wrap,.modal{zoom:var(--z,1)}
+@media (max-width:600px){.topbar{gap:6px;padding:10px 10px}.topbar .tl{display:none}.topbar .t{font-size:15px}.topbar a{padding:4px 8px}.topbar .tbt{padding:3px 6px}.topbar .zoom button{min-width:28px}.topbar .zoom #zv{min-width:40px}}
