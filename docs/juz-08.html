@@ -688,12 +688,16 @@ html.narrow table.reviewsum th{width:95px}
       "<div class='content'><div class='formulation'>" + qText(q) + "<span class='tag'>" + (q.type === "faida" ? "فوائد الآيات" : "معاني الكلمات") + "</span><div class='answer' style='margin-top:8px'>" + opts + "</div>" + fb + "</div></div></div>";
   }
 
-  function viewReview(idx, onlyWrong) {
+  function viewReview(idx, filter) {
     stopTimer();
     var all = attempts(), a = all[idx]; if (!a) { location.hash = ""; return; }
     setTitle("مراجعة المحاولة");
     var p = a.marks / a.total * 100, b = band(p);
-    var list = a.slots.map(function (s, i) { return (!onlyWrong || !s.ok) ? renderReviewQ(a, s, i) : ""; }).join("");
+    var keep = function (s) { return filter === "wrong" ? !s.ok : filter === "flagged" ? s.flag : true; };
+    var nFlag = a.slots.filter(function (s) { return s.flag; }).length;
+    var list = a.slots.map(function (s, i) { return keep(s) ? renderReviewQ(a, s, i) : ""; }).join("");
+    var fbtn = function (f, txt) { return filter === f ? "<a class='btn btn-secondary' href='#review/" + idx + "'>عرض كل الأسئلة</a>" : "<a class='btn btn-secondary' href='#review/" + idx + "/" + f + "'>" + txt + "</a>"; };
+    var empty = filter === "flagged" ? "لا توجد أسئلة مُعلَّمة في هذه المحاولة." : "لا توجد أخطاء في هذه المحاولة. بارك الله فيك!";
     app.innerHTML = "<div class='attempt'><div><div class='card' style='margin-bottom:20px'>" +
       "<table class='reviewsum'>" +
       "<tr><th>الحالة</th><td>منتهية" + (a.timeout ? " (أُرسلت تلقائيًا عند انتهاء الوقت)" : "") + "</td></tr>" +
@@ -704,8 +708,8 @@ html.narrow table.reviewsum th{width:95px}
       "<tr><th>الدرجة</th><td><b>" + p.toFixed(2) + "</b> من 100.00 (<b>" + Math.round(p) + "</b>%)</td></tr>" +
       "<tr><th>الإفادة</th><td><div class='band'><div class='bh' style='background:" + b.c + "'>" + b.h + "</div><div class='bb'>" + b.t + "<div class='tip'>" + b.tip + "</div></div></div></td></tr>" +
       "</table><div class='center'>" +
-      "<button class='btn btn-secondary' id='delattempt' style='color:#c62828'>حذف هذه المحاولة</button> " + (onlyWrong ? "<a class='btn btn-secondary' href='#review/" + idx + "'>عرض كل الأسئلة</a>" : "<a class='btn btn-secondary' href='#review/" + idx + "/wrong'>عرض الأخطاء فقط (" + (a.total - a.marks) + ")</a>") +
-      " <a class='btn btn-primary' href='#'>إنهاء المراجعة</a></div></div>" + (list || "<div class='card center'>لا توجد أخطاء في هذه المحاولة. بارك الله فيك!</div>") +
+      "<button class='btn btn-secondary' id='delattempt' style='color:#c62828'>حذف هذه المحاولة</button> " + fbtn("wrong", "عرض الأخطاء فقط (" + (a.total - a.marks) + ")") + " " + fbtn("flagged", "🚩 عرض المُعلَّمة فقط (" + nFlag + ")") +
+      " <a class='btn btn-primary' href='#'>إنهاء المراجعة</a></div></div>" + (list || "<div class='card center'>" + empty + "</div>") +
       "</div>" + navBlock(a, "review") + "</div>";
     app.querySelectorAll(".qnb").forEach(function (bt) { bt.onclick = function () { var el = document.getElementById("q" + bt.dataset.i); if (el) el.scrollIntoView({ behavior: "smooth" }); }; });
     document.getElementById("delattempt").onclick = function () { confirmDelete(a, idx + 1, function () { location.hash = ""; }); };
@@ -725,7 +729,7 @@ html.narrow table.reviewsum th{width:95px}
     var h = location.hash.replace(/^#/, "");
     if (h === "attempt") return viewAttempt();
     if (h === "summary") return viewSummary();
-    var m = h.match(/^review\/(\d+)(\/wrong)?$/); if (m) { scrollTo(0, 0); return viewReview(+m[1], !!m[2]); }
+    var m = h.match(/^review\/(\d+)(?:\/(wrong|flagged))?$/); if (m) { scrollTo(0, 0); return viewReview(+m[1], m[2] || null); }
     viewStart();
   }
   window.addEventListener("hashchange", route);
